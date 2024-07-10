@@ -37,3 +37,23 @@ export async function getAllLinkedData(
     return [];
   }
 }
+
+export async function getClientContactsById(
+  clientId: number
+): Promise<IClientContact[]> {
+  const baseUrl = "https://localhost:7286/api/ClientContact";
+
+  try {
+    // Fetch contacts for the specified client ID
+    const response = await axios.get<IClientContact[]>(
+      `${baseUrl}/${clientId}/contacts`
+    );
+
+    return response.data.map((d) => {
+      return d;
+    });
+  } catch (error) {
+    console.error("Error fetching client contacts:", error);
+    return [];
+  }
+}

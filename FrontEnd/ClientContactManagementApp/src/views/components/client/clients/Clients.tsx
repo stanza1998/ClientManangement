@@ -6,8 +6,9 @@ import Modal from '../../../../shared-components/Modal';
 import ClientsForm from '../client-form/ClientsForm';
 import { useAppContext } from '../../../../context/Context';
 import NoDataMessage from '../../../../shared-components/NoDataMessage';
-import LinkClientContactForm from '../Link-client-contact-form/LinkClientContactForm';
+import LinkClientContactForm from '../link-client-contact-form/LinkClientContactForm';
 import { getAllLinkedData } from '../../../../helper-functions/GetAllLinkedData';
+import ViewClientContactForm from '../view-client-contact-form/ViewClientContactForm';
 
 
 interface IProps {
@@ -38,6 +39,13 @@ const Clients = observer(({ clients }: IProps) => {
   const closeCreateModalLink = () => {
     setIsModalOpenLink(false);
   };
+  const openCreateModalView = () => {
+    setIsModalOpenView(true);
+  };
+
+  const closeCreateModalView = () => {
+    setIsModalOpenView(false);
+  };
 
   const onCreate = () => {
     openCreateModal();
@@ -45,6 +53,10 @@ const Clients = observer(({ clients }: IProps) => {
   const onLinkContact = (client: IClient) => {
     store.client.select(client);
     openCreateModalLink();
+  }
+  const onViewContact = (client: IClient) => {
+    store.client.select(client);
+    openCreateModalView();
   }
 
 
@@ -103,8 +115,7 @@ const Clients = observer(({ clients }: IProps) => {
                 <td>{client.clientCode}</td>
                 <td style={{ textAlign: "center" }}>34</td>
                 <td>
-                  {/* <button onClick={() => onEdit(client)} >Edit</button> */}
-                  <button >View linked to contact</button>
+                  <button onClick={() => onViewContact(client)}>View linked to contact</button>
                   <button onClick={() => onLinkContact(client)}>link to contact</button>
                   <button onClick={() => onDelete(client.id)}>Delete</button>
                 </td>
@@ -120,9 +131,14 @@ const Clients = observer(({ clients }: IProps) => {
         <button onClick={closeCreateModal}>Close Modal</button>
       </Modal>
       <Modal isOpen={isModalOpenLink} onClose={closeCreateModalLink}>
-        <h2>Create Client</h2>
+        <h2>Link Client to Contacts</h2>
         <LinkClientContactForm setCloseModal={setIsModalOpenLink} />
         <button onClick={closeCreateModalLink}>Close Modal</button>
+      </Modal>
+      <Modal isOpen={isModalOpenView} onClose={closeCreateModalView}>
+        <h2>Client View</h2>
+        <ViewClientContactForm setCloseModal={setIsModalOpenLink} />
+        <button onClick={closeCreateModalView}>Close Modal</button>
       </Modal>
     </div>
   );
