@@ -1,0 +1,14 @@
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* Adjust height as needed */
+  background-color: #f8f9fa; /* Light background color */
+  border: 1px solid #dee2e6; /* Border color */
+  border-radius: 8px; /* Rounded corners */
+  color: #6c757d; /* Text color */
+  font-size: 18px; /* Font size */
+  font-family: 'Arial', sans-serif; /* Font family */
+  margin: 20px; /* Margin around the message box */
+  text-align: center; /* Center text */
+}

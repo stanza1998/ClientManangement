@@ -17,7 +17,7 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Contacts
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
             var contacts = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts").ToListAsync();
@@ -26,6 +26,7 @@ namespace BackEnd.Controllers
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
+
         public async Task<ActionResult<Contact>> GetContact(int id)
         {
             var contact = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts WHERE Id = {0}", id).FirstOrDefaultAsync();
@@ -39,7 +40,7 @@ namespace BackEnd.Controllers
         }
 
         // POST: api/Contacts
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
             await _context.Database.ExecuteSqlRawAsync("INSERT INTO Contacts (Name, Surname, Email) VALUES ({0}, {1}, {2})", contact.Name, contact.Surname, contact.Email);
@@ -47,7 +48,7 @@ namespace BackEnd.Controllers
         }
 
         // PUT: api/Contacts/5
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> PutContact(int id, Contact contact)
         {
             await _context.Database.ExecuteSqlRawAsync("UPDATE Contacts SET Name = {0}, Surname = {1}, Email = {2} WHERE Id = {3}", contact.Name, contact.Surname, contact.Email, id);
@@ -55,7 +56,7 @@ namespace BackEnd.Controllers
         }
 
         // DELETE: api/Contacts/5
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {
             await _context.Database.ExecuteSqlRawAsync("DELETE FROM Contacts WHERE Id = {0}", id);

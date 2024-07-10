@@ -1,0 +1,58 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .9); /* semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  /* max-width: 100%; */
+
+  width: 50%;
+  overflow: auto;
+  opacity: 0;
+  transform: translateY(-50px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #888;
+  transition: color 0.3s ease;
+}
+
+.modal-close-btn:hover {
+  color: #555;
+}
+
+.modal-content {
+  /* Add additional styles as needed for the modal content */
+}

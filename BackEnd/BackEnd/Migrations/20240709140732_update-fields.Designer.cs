@@ -3,6 +3,7 @@ using BackEnd.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240709140732_update-fields")]
+    partial class updatefields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +34,9 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("ClientCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -39,30 +44,10 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientCode")
+                        .IsUnique();
+
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("BackEnd.Models.ClientContact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ContactId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("ContactId");
-
-                    b.ToTable("ClientContacts");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Contact", b =>
@@ -75,7 +60,7 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -87,26 +72,10 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Contacts");
-                });
-
-            modelBuilder.Entity("BackEnd.Models.ClientContact", b =>
-                {
-                    b.HasOne("BackEnd.Models.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BackEnd.Models.Contact", "Contact")
-                        .WithMany()
-                        .HasForeignKey("ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Contact");
                 });
 #pragma warning restore 612, 618
         }

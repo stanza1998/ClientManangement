@@ -3,6 +3,7 @@ using BackEnd.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240709170640_update-database")]
+    partial class updatedatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,21 +47,13 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Models.ClientContact", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<int>("ContactId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
+                    b.HasKey("ClientId", "ContactId");
 
                     b.HasIndex("ContactId");
 
@@ -93,13 +88,13 @@ namespace BackEnd.Migrations
             modelBuilder.Entity("BackEnd.Models.ClientContact", b =>
                 {
                     b.HasOne("BackEnd.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("ClientContacts")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Contact", "Contact")
-                        .WithMany()
+                        .WithMany("ClientContacts")
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -107,6 +102,16 @@ namespace BackEnd.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Client", b =>
+                {
+                    b.Navigation("ClientContacts");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Contact", b =>
+                {
+                    b.Navigation("ClientContacts");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,30 +13,22 @@ namespace BackEnd.Context
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ClientContact> ClientContacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<ClientContact>()
+            //    .HasKey(cc => new { cc.ClientId, cc.ContactId });
 
-            modelBuilder.Entity<Client>()
-                .HasIndex(c => c.ClientCode)
-                .IsUnique();
+            //modelBuilder.Entity<ClientContact>()
+            //    .HasOne(cc => cc.Client)
+            //    .WithMany(c => c.ClientContacts)
+            //    .HasForeignKey(cc => cc.ClientId);
 
-            modelBuilder.Entity<Client>()
-                .Property(c => c.ClientCode)
-                .HasDefaultValueSql("NEWID()");
-
-            modelBuilder.Entity<Contact>()
-                .HasIndex(c => c.Email)
-                .IsUnique();
-
-            modelBuilder.Entity<Client>()
-                .HasMany(c => c.Contacts)
-                .WithMany(c => c.Clients)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ClientContact",
-                    r => r.HasOne<Contact>().WithMany().HasForeignKey("ContactId"),
-                    l => l.HasOne<Client>().WithMany().HasForeignKey("ClientId"));
+            //modelBuilder.Entity<ClientContact>()
+            //    .HasOne(cc => cc.Contact)
+            //    .WithMany(c => c.ClientContacts)
+            //    .HasForeignKey(cc => cc.ContactId);
         }
     }
 
