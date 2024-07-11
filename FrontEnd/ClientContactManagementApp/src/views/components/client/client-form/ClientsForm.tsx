@@ -16,7 +16,6 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const $client: IClient = {
       id: 0,
       name: client.name,
@@ -28,7 +27,7 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
       await api.client.getAll();
       onClose();
     } catch (error) {
-      console.log("error create");
+
 
     }
 

@@ -31,7 +31,7 @@ export default class ContactApi {
   }
 
   async create(data: IContact) {
-    console.log("🚀 ~ ClientApi ~ create ~ data:", data);
+
     try {
       const response = await axios.post(`${this.baseUrl}/create`, data); // Adjusted endpoint URL
       const newItem: IContact = response.data;

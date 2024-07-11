@@ -4,29 +4,29 @@ import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
 import { IClientContact } from '../../../../EndPoints/models/ClientContact';
+import NoDataMessage from '../../../../shared-components/NoDataMessage';
 
 
 interface IProps {
-    setCloseModal: (value: boolean) => void;
+    setCloseModal?: (value: boolean) => void;
+    linkedContacts: any[] | undefined;
 }
 
-const LinkClientContactForm = observer(({ setCloseModal }: IProps) => {
+const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProps) => {
     const { store, api } = useAppContext();
     const [client, setClient] = useState<IClient>({ ...defaultClient });
     const [selectedContactIds, setSelectedContactIds] = useState<number[]>([]);
-    console.log("🚀 ~ LinkClientContactForm ~ selectedContactIds:", selectedContactIds)
 
+    const linkedContactIds = (linkedContacts ?? []).map(contact => contact.id); // Providing a default empty array if linkedContacts is undefined
 
-    const contacts = store.contact.all.map((contact) => { return contact.asJson })
+    const contacts = store.contact.all
+        .filter((c) => !linkedContactIds.includes(c.asJson.id))
+        .map((contact) => contact.asJson);
 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-
         for (const id of selectedContactIds) {
-
-
             const LinkClientContact: IClientContact = {
                 id: 0,
                 clientId: client.id,
@@ -36,10 +36,9 @@ const LinkClientContactForm = observer(({ setCloseModal }: IProps) => {
                 await api.clientContact.linkContactToClient(LinkClientContact.clientId, LinkClientContact.contactId);
                 onClose();
             } catch (error) {
-                console.log("error create");
-
             }
         }
+        window.location.reload();
 
     };
 
@@ -59,7 +58,9 @@ const LinkClientContactForm = observer(({ setCloseModal }: IProps) => {
     const onClose = () => {
         setClient({ ...defaultClient })
         store.client.clearSelected;
-        setCloseModal(false)
+        if (setCloseModal) {
+            setCloseModal(false)
+        }
     }
 
     useEffect(() => {
@@ -72,46 +73,29 @@ const LinkClientContactForm = observer(({ setCloseModal }: IProps) => {
 
     return (
         <div className="form-container">
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="name">Name:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={client.name}
-                        disabled
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="name">Client Code:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={client.clientCode}
-                        disabled
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="name">Available contacts:</label>
-                    {contacts.map((c) => (
-                        <label key={c.id}>
-                            <input
-                                type="checkbox"
-                                checked={selectedContactIds.includes(c.id)}
-                                onChange={() => handleCheckboxChange(c.id)}
-                            />
-                            {c.name} {c.surname}
-                        </label>
-                    ))}
+            {contacts.length === 0 && <NoDataMessage message="This client is linked to all contacts in the database" />}
+            {contacts.length > 0 &&
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="name">{selectedContactIds.length > 0 ? `${selectedContactIds.length} contact(s) selected` : "Available contacts"}</label>
+                        {contacts.map((c) => (
+                            <label key={c.id}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedContactIds.includes(c.id)}
+                                    onChange={() => handleCheckboxChange(c.id)}
+                                />
+                                {c.name} {c.surname}
+                            </label>
+                        ))}
 
-                </div>
+                    </div>
 
-                <button type="submit" className="btn-submit">
-                    Create Link(s)
-                </button>
-            </form>
+                    <button type="submit" className="btn-submit">
+                        Create Link(s)
+                    </button>
+                </form>
+            }
         </div>
     );
 });

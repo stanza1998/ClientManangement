@@ -30,7 +30,7 @@ export default class ClientApi {
   }
 
   async create(data: IClient) {
-    console.log("🚀 ~ ClientApi ~ create ~ data:", data);
+
     try {
       const response = await axios.post(`${this.baseUrl}/create`, data); // Adjusted endpoint URL
       const newItem: IClient = response.data;

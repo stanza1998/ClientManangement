@@ -38,9 +38,7 @@ export async function getAllLinkedData(
   }
 }
 
-export async function getClientContactsById(
-  clientId: number
-): Promise<IClientContact[]> {
+export async function getClientContactsById(clientId: number) {
   const baseUrl = "https://localhost:7286/api/ClientContact";
 
   try {

@@ -14,10 +14,15 @@ export default abstract class Store<Type, Model> {
       all: true,
       size: true,
       getById: true,
+      load: false, // Load is not observable
+      remove: false, // Remove is an action
+      removeAll: false, // RemoveAll is an action
+      select: false, // Select is an action
+      clearSelected: false, // ClearSelected is an action
     });
   }
 
-  load(items: Type[] = []) { }
+  load(items: Type[] = []) {}
 
   remove(id: number) {
     runInAction(() => {

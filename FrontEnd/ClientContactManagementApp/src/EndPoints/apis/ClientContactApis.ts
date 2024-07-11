@@ -10,17 +10,26 @@ export default class ClientContactApi {
   }
 
   async linkContactToClient(clientId: number, contactId: number) {
-    console.log(`Linking contact ${contactId} to client ${clientId}`);
     try {
       const response = await axios.post(
         `${this.baseUrl}/${clientId}/linkContact/${contactId}`
       );
       if (response.status === 204) {
-        console.log("Contact linked successfully");
         // You can refresh the contacts list or perform any other actions as needed
       }
     } catch (error) {
       console.error("Error linking contact to client:", error);
+    }
+  }
+  async unlinkContactToClient(clientId: number, contactId: number) {
+    try {
+      const response = await axios.delete(
+        `https://localhost:7286/api/ClientContact/${clientId}/unlinkContact/${contactId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error unlinking contact from client:", error);
+      throw error;
     }
   }
 

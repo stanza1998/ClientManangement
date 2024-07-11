@@ -8,7 +8,8 @@ import { useAppContext } from '../../../../context/Context';
 import NoDataMessage from '../../../../shared-components/NoDataMessage';
 import LinkClientContactForm from '../link-client-contact-form/LinkClientContactForm';
 import { getAllLinkedData } from '../../../../helper-functions/GetAllLinkedData';
-import ViewClientContactForm from '../view-client-contact-form/ViewClientContactForm';
+import ViewClientContactForm from '../client-contact-link-component/ViewClientContactForm';
+import { getNumberOfContacts } from './GetNumberOfContacts';
 
 
 interface IProps {
@@ -17,12 +18,14 @@ interface IProps {
 
 const Clients = observer(({ clients }: IProps) => {
   const { store, api } = useAppContext();
+  const [numberOfContacts, setNumberOfContacts] = useState(0);
+
 
 
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpenLink, setIsModalOpenLink] = useState(false);
+
   const [isModalOpenView, setIsModalOpenView] = useState(false);
 
   const openCreateModal = () => {
@@ -31,29 +34,22 @@ const Clients = observer(({ clients }: IProps) => {
 
   const closeCreateModal = () => {
     setIsModalOpen(false);
-  };
-  const openCreateModalLink = () => {
-    setIsModalOpenLink(true);
+    store.client.clearSelected();
   };
 
-  const closeCreateModalLink = () => {
-    setIsModalOpenLink(false);
-  };
   const openCreateModalView = () => {
     setIsModalOpenView(true);
   };
 
   const closeCreateModalView = () => {
     setIsModalOpenView(false);
+    store.client.clearSelected();
   };
 
   const onCreate = () => {
     openCreateModal();
   }
-  const onLinkContact = (client: IClient) => {
-    store.client.select(client);
-    openCreateModalLink();
-  }
+
   const onViewContact = (client: IClient) => {
     store.client.select(client);
     openCreateModalView();
@@ -73,13 +69,26 @@ const Clients = observer(({ clients }: IProps) => {
       }
     }
   };
+  const [contactCounts, setContactCounts] = useState<any>({});
+
+  useEffect(() => {
+    async function fetchAllContactLengths() {
+      const counts:any = {};
+      for (const client of clients) {
+        counts[client.id] = await getNumberOfContacts(client.id);
+      }
+      setContactCounts(counts);
+    }
+
+    fetchAllContactLengths();
+  }, [clients]);
 
 
 
   useEffect(() => {
     const loadData = async () => {
       const linkedData = await getAllLinkedData(clients);
-      console.log("🚀 ~ loadData ~ linkedData:", linkedData)
+
 
     }
     loadData()
@@ -113,10 +122,11 @@ const Clients = observer(({ clients }: IProps) => {
                 <td>{client.id}</td>
                 <td>{client.name}</td>
                 <td>{client.clientCode}</td>
-                <td style={{ textAlign: "center" }}>34</td>
+                <td style={{ textAlign: "center" }}>
+                  {contactCounts[client.id] !== undefined ? contactCounts[client.id] : 'Loading...'}
+                </td>
                 <td>
-                  <button onClick={() => onViewContact(client)}>View linked to contact</button>
-                  <button onClick={() => onLinkContact(client)}>link to contact</button>
+                  <button onClick={() => onViewContact(client)}>Details</button>
                   <button onClick={() => onDelete(client.id)}>Delete</button>
                 </td>
               </tr>
@@ -130,14 +140,9 @@ const Clients = observer(({ clients }: IProps) => {
         <ClientsForm setCloseModal={setIsModalOpen} />
         <button onClick={closeCreateModal}>Close Modal</button>
       </Modal>
-      <Modal isOpen={isModalOpenLink} onClose={closeCreateModalLink}>
-        <h2>Link Client to Contacts</h2>
-        <LinkClientContactForm setCloseModal={setIsModalOpenLink} />
-        <button onClick={closeCreateModalLink}>Close Modal</button>
-      </Modal>
       <Modal isOpen={isModalOpenView} onClose={closeCreateModalView}>
         <h2>Client View</h2>
-        <ViewClientContactForm setCloseModal={setIsModalOpenLink} />
+        <ViewClientContactForm setCloseModal={setIsModalOpenView} />
         <button onClick={closeCreateModalView}>Close Modal</button>
       </Modal>
     </div>

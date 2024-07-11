@@ -30,7 +30,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
       await api.contact.getAll();
       onClose();
     } catch (error) {
-      console.log("error create");
+
 
     }
 

@@ -28,7 +28,7 @@ const LinkContactClientForm = observer(({ setCloseModal }: IProps) => {
             await api.client.getAll();
             onClose();
         } catch (error) {
-            console.log("error create");
+  
 
         }
 
