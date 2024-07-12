@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './LinkContactClientForm.css';
-import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
 import { IClientContact } from '../../../../EndPoints/models/ClientContact';
-import NoDataMessage from '../../../../shared-components/NoDataMessage';
+import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage';
 import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
 
 

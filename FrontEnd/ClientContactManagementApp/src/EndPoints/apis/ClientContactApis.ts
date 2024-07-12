@@ -9,61 +9,65 @@ export default class ClientContactApi {
     this.baseUrl = "https://localhost:7286/api/ClientContact"; // Base URL with endpoint path
   }
 
+  // Link a contact to a client
   async linkContactToClient(clientId: number, contactId: number) {
     try {
       const response = await axios.post(
         `${this.baseUrl}/${clientId}/linkContact/${contactId}`
       );
       if (response.status === 204) {
-        // You can refresh the contacts list or perform any other actions as needed
+        // Handle success, e.g., refresh contacts list
       }
     } catch (error) {
       console.error("Error linking contact to client:", error);
     }
   }
+
+  // Unlink a contact from a client
   async unlinkContactToClient(clientId: number, contactId: number) {
     try {
       const response = await axios.delete(
-        `https://localhost:7286/api/ClientContact/${clientId}/unlinkContact/${contactId}`
+        `${this.baseUrl}/${clientId}/unlinkContact/${contactId}`
       );
-      return response.data;
+      return response.data; // Returns response data if needed
     } catch (error) {
       console.error("Error unlinking contact from client:", error);
       throw error;
     }
   }
 
+  // Get contacts linked to a specific client
   async getContactsForClient(clientId: number) {
     try {
       const response = await axios.get(`${this.baseUrl}/${clientId}/contacts`);
       const items: IClientContact[] = response.data;
-      this.store.clientContact.load(items);
+      this.store.clientContact.load(items); // Loads retrieved contacts into AppStore
     } catch (error) {
       console.error("Error retrieving contacts for client:", error);
     }
   }
 
-
-  // contact to client
-   async unlinkContactClientToContact( contactId: number, clientId: number) {
+  // Unlink a contact from a client using contactId and clientId
+  async unlinkContactClientToContact(contactId: number, clientId: number) {
     try {
       const response = await axios.delete(
         `https://localhost:7286/api/ContactClient/${contactId}/unlinkClient/${clientId}`
       );
-      return response.data;
+      return response.data; // Returns response data if needed
     } catch (error) {
       console.error("Error unlinking contact from client:", error);
       throw error;
     }
   }
 
-    async linkContactClientToContact(contactId: number, clientId: number) {
+  // Link a contact to a client using contactId and clientId
+  async linkContactClientToContact(contactId: number, clientId: number) {
     try {
       const response = await axios.post(
-         `https://localhost:7286/api/ContactClient/${clientId}/linkClient/${contactId}`
+        `https://localhost:7286/api/ContactClient/${clientId}/linkClient/${contactId}`
       );
       if (response.status === 204) {
-        // You can refresh the contacts list or perform any other actions as needed
+        // Handle success, e.g., refresh contacts list
       }
     } catch (error) {
       console.error("Error linking contact to client:", error);

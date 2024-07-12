@@ -2,21 +2,15 @@ import React from 'react';
 import './ErrorMessage.css';
 
 interface ErrorMessageProps {
-    errorMessage: string;
-    onClose?: () => void; // Optional prop for handling close event
+  errorMessage: string;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ errorMessage, onClose }) => {
-    return (
-        <div className="error-message">
-            <p className="error-text">{errorMessage}</p>
-            {onClose && (
-                <span className="close-icon" onClick={onClose}>
-                    &times;
-                </span>
-            )}
-        </div>
-    );
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ errorMessage }) => {
+  return (
+    <div className="error-message">
+      <p className="error-text">{errorMessage}</p>
+    </div>
+  );
 };
 
 export default ErrorMessage;

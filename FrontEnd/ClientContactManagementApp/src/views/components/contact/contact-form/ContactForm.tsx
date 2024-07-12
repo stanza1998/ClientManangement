@@ -6,7 +6,6 @@ import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
 import { validateContact } from '../../../../validation-functions/ValidationFunctions';
 import ErrorMessage from '../../../../shared-components/error-message/ErrorMessage';
 
-
 interface IProps {
   setCloseModal: (value: boolean) => void;
 }
@@ -14,22 +13,16 @@ interface IProps {
 const ContactsForm = observer(({ setCloseModal }: IProps) => {
   const { store, api } = useAppContext();
   const [contact, setContact] = useState<IContact>({ ...defaultContact });
-  const [nameErrorMessage, setNameErrorMessage] = useState("")
+  const [nameErrorMessage, setNameErrorMessage] = useState<string>("");
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate the contact object
     const validationError = validateContact(contact);
     if (validationError) {
-      setNameErrorMessage(validationError)
-      setContact({
-        ...defaultContact,
-        name: "",
-        surname: "",
-        email: ""
-
-      })
+      setNameErrorMessage(validationError);
       return; // Exit early if validation fails
     }
 
@@ -42,38 +35,36 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
 
     try {
       await api.contact.create($contact);
-      store.contact.removeAll();
-      await api.contact.getAll();
+      window.location.reload() // temporary UI fix
       onClose();
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error creating contact:', error);
       // Handle error state or display error message to the user
     }
   };
 
-
-
+  // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setContact(prevClient => ({
-      ...prevClient,
+    setContact(prevContact => ({
+      ...prevContact,
       [name]: value
     }));
   };
 
+  // Handle modal close
   const onClose = () => {
-    setContact({ ...defaultContact })
-    store.contact.clearSelected;
-    setCloseModal(false)
-  }
+    setContact({ ...defaultContact });
+    store.contact.clearSelected(); // Clear selected contact in MobX store
+    setCloseModal(false);
+  };
 
+  // Effect to set contact when selected contact changes
   useEffect(() => {
     if (store.contact.selected) {
       setContact(store.contact.selected);
-    } else {
-
     }
-  }, [store.contact.selected])
+  }, [store.contact.selected]);
 
   return (
     <div className="form-container">
@@ -91,7 +82,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="name">Surname:</label>
+          <label htmlFor="surname">Surname:</label>
           <input
             type="text"
             id="surname"
@@ -101,7 +92,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="name">Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="text"
             id="email"

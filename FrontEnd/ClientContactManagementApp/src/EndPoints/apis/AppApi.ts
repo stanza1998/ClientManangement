@@ -9,8 +9,9 @@ export default class AppApi {
   clientContact: ClientContactApi;
 
   constructor(private store: AppStore) {
-    this.client = new ClientApi(this.store);
-    this.contact = new ContactApi(this.store);
-    this.clientContact = new ClientContactApi(this.store);
+    // Initialize API instances with the provided AppStore
+    this.client = new ClientApi(this.store); // API for interacting with clients
+    this.contact = new ContactApi(this.store); // API for interacting with contacts
+    this.clientContact = new ClientContactApi(this.store); // API for client contact relationships
   }
 }

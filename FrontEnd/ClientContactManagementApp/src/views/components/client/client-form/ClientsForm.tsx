@@ -6,31 +6,29 @@ import { useAppContext } from '../../../../context/Context';
 import { validateClientName } from '../../../../validation-functions/ValidationFunctions';
 import ErrorMessage from '../../../../shared-components/error-message/ErrorMessage';
 
-
 interface IProps {
-  setCloseModal: (value: boolean) => void;
+  setCloseModal: (value: boolean) => void; // Function to close the modal passed as prop
 }
 
 const ClientsForm = observer(({ setCloseModal }: IProps) => {
-  const { store, api } = useAppContext();
-  const [nameErrorMessage, setNameErrorMessage] = useState("")
+  const { store, api } = useAppContext(); // Accessing MobX store and API context
+  const [nameErrorMessage, setNameErrorMessage] = useState<string>(""); // State for name input error message
   const [client, setClient] = useState<IClient>({
     ...defaultClient,
     name: ""
   });
 
-
-
+  // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setNameErrorMessage("")
-    const validationError = validateClientName(client);
+    e.preventDefault(); // Prevent default form submission
+    setNameErrorMessage(""); // Clear previous error message
+    const validationError = validateClientName(client); // Validate client name
     if (validationError) {
-      setNameErrorMessage(validationError)
+      setNameErrorMessage(validationError); // Set validation error message
       setClient({
         ...defaultClient,
         name: ""
-      })
+      });
       return; // Exit early if validation fails
     }
 
@@ -41,15 +39,16 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
     };
 
     try {
-      await api.client.create($client);
-      await api.client.getAll();
-      onClose();
+      await api.client.create($client); // Call API to create client
+      window.location.reload() // temporary UI fix
+      onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error('Error:', error);
-
+      // Handle error (e.g., display error message)
     }
   };
 
+  // Function to handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setClient(prevClient => ({
@@ -58,25 +57,25 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
     }));
   };
 
+  // Function to close the modal
   const onClose = () => {
-    setClient({ ...defaultClient })
-    store.client.clearSelected;
-    setCloseModal(false)
-  }
+    setClient({ ...defaultClient }); // Reset client state
+    store.client.clearSelected(); // Clear selected client in MobX store
+    setCloseModal(false); // Close the modal by setting the state
+  };
 
+  // Effect to update client state when selected client changes in MobX store
   useEffect(() => {
     if (store.client.selected) {
       setClient(store.client.selected);
-    } else {
-
     }
-  }, [store.client.selected])
+  }, [store.client.selected]);
 
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          {nameErrorMessage && <ErrorMessage errorMessage={nameErrorMessage} />}
+          {nameErrorMessage && <ErrorMessage errorMessage={nameErrorMessage} />} {/* Display error message if present */}
           <label htmlFor="name">Name:</label>
           <input
             className="input"
@@ -84,8 +83,8 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
             id="name"
             name="name"
             value={client.name}
-            placeholder="Enter client name" // Add a placeholder
-            onChange={handleChange}
+            placeholder="Enter client name" // Placeholder text for input
+            onChange={handleChange} // Handle input change
           />
         </div>
 

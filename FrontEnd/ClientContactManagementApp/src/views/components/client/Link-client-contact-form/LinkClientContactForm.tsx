@@ -4,8 +4,7 @@ import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
 import { IClientContact } from '../../../../EndPoints/models/ClientContact';
-import NoDataMessage from '../../../../shared-components/NoDataMessage';
-
+import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage';
 
 interface IProps {
     setCloseModal?: (value: boolean) => void;
@@ -17,33 +16,35 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
     const [client, setClient] = useState<IClient>({ ...defaultClient });
     const [selectedContactIds, setSelectedContactIds] = useState<number[]>([]);
 
-    const linkedContactIds = (linkedContacts ?? []).map(contact => contact.id); // Providing a default empty array if linkedContacts is undefined
+    // Extract linked contact IDs if available, default to empty array
+    const linkedContactIds = (linkedContacts ?? []).map(contact => contact.id);
 
+    // Filter contacts that are not already linked
     const contacts = store.contact.all
         .filter((c) => !linkedContactIds.includes(c.asJson.id))
         .map((contact) => contact.asJson);
 
-
+    // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         for (const id of selectedContactIds) {
-            const LinkClientContact: IClientContact = {
+            const linkClientContact: IClientContact = {
                 id: 0,
                 clientId: client.id,
                 contactId: id
-            }
+            };
             try {
-                await api.clientContact.linkContactToClient(LinkClientContact.clientId, LinkClientContact.contactId);
+                await api.clientContact.linkContactToClient(linkClientContact.clientId, linkClientContact.contactId);
                 onClose();
             } catch (error) {
+                console.error('Error linking contact to client:', error);
             }
         }
-        window.location.reload();
+        window.location.reload(); // Refresh the page (consider more optimal UX)
 
     };
 
-
-
+    // Handle checkbox change
     const handleCheckboxChange = (id: number) => {
         setSelectedContactIds((prevSelectedIds) =>
             prevSelectedIds.includes(id)
@@ -52,32 +53,34 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
         );
     };
 
-
-
-
+    // Handle modal close
     const onClose = () => {
-        setClient({ ...defaultClient })
-        store.client.clearSelected;
+        setClient({ ...defaultClient });
+        store.client.clearSelected(); // Clear selected client in MobX store
         if (setCloseModal) {
-            setCloseModal(false)
+            setCloseModal(false);
         }
-    }
+    };
 
+    // Effect to set client when selected client changes
     useEffect(() => {
         if (store.client.selected) {
             setClient(store.client.selected);
-        } else {
-
         }
-    }, [store.client.selected])
+    }, [store.client.selected]);
 
     return (
         <div className="form-container">
+            {/* Display message when no available contacts */}
             {contacts.length === 0 && <NoDataMessage message="This client is linked to all contacts in the database" />}
-            {contacts.length > 0 &&
+
+            {/* Render form if there are available contacts */}
+            {contacts.length > 0 && (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="name">{selectedContactIds.length > 0 ? `${selectedContactIds.length} contact(s) selected` : "Available contacts"}</label>
+                        <label htmlFor="name">
+                            {selectedContactIds.length > 0 ? `${selectedContactIds.length} contact(s) selected` : "Available contacts"}
+                        </label>
                         {contacts.map((c) => (
                             <label key={c.id}>
                                 <input
@@ -88,14 +91,12 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
                                 {c.name} {c.surname}
                             </label>
                         ))}
-
                     </div>
-
                     <button type="submit" className="btn btn-primary">
                         Create Link(s)
                     </button>
                 </form>
-            }
+            )}
         </div>
     );
 });
