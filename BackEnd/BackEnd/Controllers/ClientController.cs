@@ -140,15 +140,10 @@ public async Task<IActionResult> DeleteClient(int id)
             {
                 prefix = "AAA"; // Default prefix if name is empty
             }
-            else if (name.Length < 3)
-            {
-                // Generate alpha prefix for short names
-                prefix = GenerateAlphaPrefix(name);
-            }
             else
             {
-                // Use the first three letters of the name as prefix
-                prefix = new string(name.Where(char.IsLetter).Take(3).ToArray()).ToUpper();
+                // Generate alpha prefix for the name
+                prefix = GenerateAlphaPrefix(name);
             }
 
             // Get the next available number for client code prefix
@@ -158,7 +153,7 @@ public async Task<IActionResult> DeleteClient(int id)
             return $"{prefix}{nextNumber:D3}";
         }
 
-        // Method to generate alphabetical prefix for short client names
+        // Method to generate alphabetical prefix for client names
         private string GenerateAlphaPrefix(string clientName)
         {
             const string defaultPrefix = "AAA"; // Default starting value for alpha prefix
@@ -186,16 +181,6 @@ public async Task<IActionResult> DeleteClient(int id)
             {
                 // Use three placeholders if no valid words are provided
                 alphaPart = defaultPrefix;
-            }
-
-            // Ensure alpha part is exactly three characters long, otherwise pad with 'A'
-            if (alphaPart.Length < 3)
-            {
-                alphaPart = alphaPart.PadRight(3, 'A');
-            }
-            else if (alphaPart.Length > 3)
-            {
-                alphaPart = alphaPart.Substring(0, 3); // Trim to three characters if longer
             }
 
             return alphaPart;
