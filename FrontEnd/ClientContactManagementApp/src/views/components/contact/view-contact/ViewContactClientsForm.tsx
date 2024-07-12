@@ -66,7 +66,7 @@ const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
                 </div>
         },
         {
-            label: 'Clients(s)', content:
+            label: 'Client(s)', content:
                 <>
                     <div >
                         <div className="form-group">

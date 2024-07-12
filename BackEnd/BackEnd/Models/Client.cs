@@ -1,11 +1,17 @@
-﻿namespace BackEnd.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BackEnd.Models
 {
     public class Client
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string ClientCode { get; set; }
-        // public ICollection<ClientContact> ClientContacts { get; set; }
-    }
 
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters")]
+        public string Name { get; set; }
+
+
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Client code must only contain letters and numbers")]
+        public string ClientCode { get; set; }
+    }
 }

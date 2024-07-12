@@ -43,7 +43,7 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{contactId}/unlinkContact/{clientId}")]
+        [HttpDelete("{contactId}/unlinkClient/{clientId}")]
         public async Task<IActionResult> UnlinkClientFromContact(int contactId, int clientId)
         {
             // Check if the contact and client exist
