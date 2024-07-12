@@ -121,33 +121,37 @@ namespace BackEnd.Controllers
 
 
         // DELETE: api/Clients/delete/{id}
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteClient(int id)
-        {
-            // Execute SQL command to delete client from database using parameterized query
-            await _context.Database.ExecuteSqlRawAsync("DELETE FROM Clients WHERE Id = {0}", id);
+   [HttpDelete("delete/{id}")]
+public async Task<IActionResult> DeleteClient(int id)
+{
+    // Execute SQL command to delete client from database using parameterized query
+    await _context.Database.ExecuteSqlRawAsync("DELETE FROM Clients WHERE Id = {0}", id);
 
-            // Return NoContent result
-            return NoContent();
-        }
+    // Return NoContent result
+    return NoContent();
+}
 
 
-        // Method to generate client code based on client name
         private string GenerateClientCode(string name)
         {
+            // Determine the prefix based on the name length and structure
             string prefix;
-
-            // Determine prefix based on client name length
-            if (name.Length < 3)
+            if (string.IsNullOrEmpty(name))
             {
-                prefix = GenerateAlphaPrefix(); // Generate alpha prefix for short names
+                prefix = "AAA"; // Default prefix if name is empty
+            }
+            else if (name.Length < 3)
+            {
+                // Generate alpha prefix for short names
+                prefix = GenerateAlphaPrefix(name);
             }
             else
             {
-                prefix = new string(name.Where(char.IsLetter).Take(3).ToArray()).ToUpper(); // Use first three letters as prefix
+                // Use the first three letters of the name as prefix
+                prefix = new string(name.Where(char.IsLetter).Take(3).ToArray()).ToUpper();
             }
 
-            // Get next available number for client code prefix
+            // Get the next available number for client code prefix
             int nextNumber = GetNextClientCodeNumber(prefix);
 
             // Format client code as prefix followed by number
@@ -155,20 +159,62 @@ namespace BackEnd.Controllers
         }
 
         // Method to generate alphabetical prefix for short client names
-        private string GenerateAlphaPrefix()
+        private string GenerateAlphaPrefix(string clientName)
         {
-            const string alphaPrefixStart = "AAA"; // Starting value for alpha prefix
-            var lastClient = _context.Clients
-                                     .OrderByDescending(c => c.ClientCode)
-                                     .FirstOrDefault(c => c.ClientCode.Length == 6 && Regex.IsMatch(c.ClientCode, @"^[A-Z]{3}\d{3}$"));
+            const string defaultPrefix = "AAA"; // Default starting value for alpha prefix
 
-            // If no clients found, return start value
-            if (lastClient == null) return alphaPrefixStart;
+            // Remove extra spaces and split the client name into words
+            string[] words = clientName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Increment alpha part of last client code
-            var lastAlphaPart = lastClient.ClientCode.Substring(0, 3);
-            var nextAlphaPart = IncrementAlphaPart(lastAlphaPart);
-            return nextAlphaPart;
+            string alphaPart;
+            if (words.Length == 3)
+            {
+                // Use the first letter of each word if there are exactly 3 words
+                alphaPart = $"{Char.ToUpper(words[0][0])}{Char.ToUpper(words[1][0])}{Char.ToUpper(words[2][0])}";
+            }
+            else if (words.Length == 2)
+            {
+                // Use the first character of the first word, the first character of the second word, and the second character of the first word
+                alphaPart = $"{Char.ToUpper(words[0][0])}{Char.ToUpper(words[1][0])}{Char.ToUpper(words[0].Length > 1 ? words[0][1] : 'A')}";
+            }
+            else if (words.Length == 1)
+            {
+                // Use the first three characters of the word if there is only 1 word
+                alphaPart = words[0].Length >= 3 ? words[0].Substring(0, 3).ToUpper() : words[0].ToUpper().PadRight(3, 'A');
+            }
+            else
+            {
+                // Use three placeholders if no valid words are provided
+                alphaPart = defaultPrefix;
+            }
+
+            // Ensure alpha part is exactly three characters long, otherwise pad with 'A'
+            if (alphaPart.Length < 3)
+            {
+                alphaPart = alphaPart.PadRight(3, 'A');
+            }
+            else if (alphaPart.Length > 3)
+            {
+                alphaPart = alphaPart.Substring(0, 3); // Trim to three characters if longer
+            }
+
+            return alphaPart;
+        }
+
+        // Method to get next available number for client code prefix
+        private int GetNextClientCodeNumber(string prefix)
+        {
+            var lastClientWithPrefix = _context.Clients
+                                               .Where(c => c.ClientCode.StartsWith(prefix))
+                                               .OrderByDescending(c => c.ClientCode)
+                                               .FirstOrDefault();
+
+            // If no clients found with prefix, start at 1
+            if (lastClientWithPrefix == null) return 1;
+
+            // Get last number in client code and increment
+            int lastNumber = int.Parse(lastClientWithPrefix.ClientCode.Substring(3, 3));
+            return lastNumber + 1;
         }
 
         // Method to increment alphabetical part of client code
@@ -190,20 +236,6 @@ namespace BackEnd.Controllers
             return new string(alphaChars);
         }
 
-        // Method to get next available number for client code prefix
-        private int GetNextClientCodeNumber(string prefix)
-        {
-            var lastClientWithPrefix = _context.Clients
-                                               .Where(c => c.ClientCode.StartsWith(prefix))
-                                               .OrderByDescending(c => c.ClientCode)
-                                               .FirstOrDefault();
 
-            // If no clients found with prefix, start at 1
-            if (lastClientWithPrefix == null) return 1;
-
-            // Get last number in client code and increment
-            int lastNumber = int.Parse(lastClientWithPrefix.ClientCode.Substring(3, 3));
-            return lastNumber + 1;
-        }
     }
 }
