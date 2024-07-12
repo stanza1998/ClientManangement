@@ -3,34 +3,47 @@ using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BackEnd.Controllers
 {
+    // Controller for managing relationships between contacts and clients
     [Route("api/[controller]")]
     [ApiController]
     public class ContactClientController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        // Constructor injection of ApplicationDbContext for database access
         public ContactClientController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Link Client to Contact
+        // Endpoint to link a client to a contact
         [HttpPost("{contactId}/linkClient/{clientId}")]
         public async Task<IActionResult> LinkClientToContact(int contactId, int clientId)
         {
-            var contact = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
-                new SqlParameter("@ContactId", contactId)).FirstOrDefaultAsync();
-            var client = await _context.Clients.FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
-                new SqlParameter("@ClientId", clientId)).FirstOrDefaultAsync();
+            // Retrieve contact and client from database
+            var contact = await _context.Contacts
+                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
+                    new SqlParameter("@ContactId", contactId))
+                .FirstOrDefaultAsync();
 
+            var client = await _context.Clients
+                .FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
+                    new SqlParameter("@ClientId", clientId))
+                .FirstOrDefaultAsync();
+
+            // If contact or client is not found, return NotFound result
             if (contact == null || client == null)
             {
                 return NotFound();
             }
 
+            // SQL query and parameters to insert into ClientContacts table
             var sql = "INSERT INTO ClientContacts (ContactId, ClientId) VALUES (@ContactId, @ClientId)";
             var parameters = new[]
             {
@@ -38,43 +51,54 @@ namespace BackEnd.Controllers
                 new SqlParameter("@ClientId", clientId)
             };
 
+            // Execute SQL command asynchronously
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
 
+            // Return NoContent result
             return NoContent();
         }
 
+        // Endpoint to unlink a client from a contact
         [HttpDelete("{contactId}/unlinkClient/{clientId}")]
         public async Task<IActionResult> UnlinkClientFromContact(int contactId, int clientId)
         {
-            // Check if the contact and client exist
-            var contact = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
-                new SqlParameter("@ContactId", contactId)).FirstOrDefaultAsync();
-            var client = await _context.Clients.FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
-                new SqlParameter("@ClientId", clientId)).FirstOrDefaultAsync();
+            // Retrieve contact and client from database
+            var contact = await _context.Contacts
+                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
+                    new SqlParameter("@ContactId", contactId))
+                .FirstOrDefaultAsync();
 
+            var client = await _context.Clients
+                .FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
+                    new SqlParameter("@ClientId", clientId))
+                .FirstOrDefaultAsync();
+
+            // If contact or client is not found, return NotFound result
             if (contact == null || client == null)
             {
                 return NotFound();
             }
 
-            // Delete the link between the client and the contact
+            // SQL query and parameters to delete from ClientContacts table
             var sql = "DELETE FROM ClientContacts WHERE ContactId = @ContactId AND ClientId = @ClientId";
             var parameters = new[]
             {
-        new SqlParameter("@ContactId", contactId),
-        new SqlParameter("@ClientId", clientId)
-    };
+                new SqlParameter("@ContactId", contactId),
+                new SqlParameter("@ClientId", clientId)
+            };
 
+            // Execute SQL command asynchronously
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
 
+            // Return NoContent result
             return NoContent();
         }
 
-
-        // Get Clients linked to a Contact
+        // Endpoint to retrieve clients linked to a contact
         [HttpGet("{contactId}/clients")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsForContact(int contactId)
         {
+            // SQL query to retrieve clients linked to a contact
             var sql = @"
                 SELECT c.*
                 FROM Clients c
@@ -84,13 +108,18 @@ namespace BackEnd.Controllers
 
             var parameter = new SqlParameter("@ContactId", contactId);
 
-            var clients = await _context.Clients.FromSqlRaw(sql, parameter).ToListAsync();
+            // Execute SQL query asynchronously and retrieve list of clients
+            var clients = await _context.Clients
+                .FromSqlRaw(sql, parameter)
+                .ToListAsync();
 
+            // If no clients found, return Ok with a message
             if (!clients.Any())
             {
                 return Ok("No clients found.");
             }
 
+            // Return Ok with the list of clients
             return Ok(clients);
         }
     }

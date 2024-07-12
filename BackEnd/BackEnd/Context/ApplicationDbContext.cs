@@ -5,31 +5,35 @@ using System.Reflection.Emit;
 
 namespace BackEnd.Context
 {
+    // DbContext class for interacting with the database
     public class ApplicationDbContext : DbContext
     {
+        // Constructor that accepts DbContextOptions
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            // Constructor initializes the base DbContext with provided options
         }
 
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<ClientContact> ClientContacts { get; set; }
+        // DbSet properties for database entities
+        public DbSet<Client> Clients { get; set; } // DbSet for Client entity
+        public DbSet<Contact> Contacts { get; set; } // DbSet for Contact entity
+        public DbSet<ClientContact> ClientContacts { get; set; } // DbSet for ClientContact entity
 
+        // Method to configure the database model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // modelBuilder.Entity<ClientContact>()
-            //     .HasKey(cc => new { cc.ClientId, cc.ContactId });
-
-            // modelBuilder.Entity<ClientContact>()
-            //     .HasOne(cc => cc.Client)
-            //     .WithMany(c => c.ClientContacts)
+            // Override this method to configure how database entities are mapped
+            // You can define entity configurations, relationships, indexes, etc. here
+            // Example:
+            // modelBuilder.Entity<Client>()
+            //     .HasKey(c => c.ClientId);
+            // modelBuilder.Entity<Client>()
+            //     .Property(c => c.Name)
+            //     .IsRequired();
+            // modelBuilder.Entity<Client>()
+            //     .HasMany(c => c.ClientContacts)
+            //     .WithOne(cc => cc.Client)
             //     .HasForeignKey(cc => cc.ClientId);
-
-            // modelBuilder.Entity<ClientContact>()
-            //     .HasOne(cc => cc.Contact)
-            //     .WithMany(c => c.ClientContacts)
-            //     .HasForeignKey(cc => cc.ContactId);
         }
     }
-
 }
