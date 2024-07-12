@@ -137,3 +137,17 @@
 }
 
 /* General info */
+/* header tag */
+/* Styling for the section title */
+.section-title {
+    font-size: 24px; /* Adjust font size as needed */
+    font-weight: 600; /* Semi-bold */
+    color: #333; /* Dark gray color */
+    margin-bottom: 15px; /* Space below the heading */
+    text-transform: uppercase; /* Uppercase text */
+    letter-spacing: 1px; /* Letter spacing for emphasis */
+    border-bottom: 2px solid #007bff; /* Blue underline */
+    padding-bottom: 5px; /* Space below the underline */
+}
+
+/* header tag */

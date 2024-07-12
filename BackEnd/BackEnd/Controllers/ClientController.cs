@@ -28,8 +28,10 @@ namespace BackEnd.Controllers
         [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
-            // Retrieve all clients from database ordered by name
-            var clients = await _context.Clients.FromSqlRaw("SELECT * FROM Clients ORDER BY Name ASC").ToListAsync();
+            // Use parameterized query to retrieve clients ordered by name
+            var clients = await _context.Clients
+                                        .FromSqlInterpolated($"SELECT * FROM Clients ORDER BY Name ASC")
+                                        .ToListAsync();
 
             // If no clients found, return Ok with a message
             if (clients == null || !clients.Any())
@@ -45,8 +47,10 @@ namespace BackEnd.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
-            // Retrieve client by id from database
-            var client = await _context.Clients.FromSqlRaw("SELECT * FROM Clients WHERE Id = {0}", id).FirstOrDefaultAsync();
+            // Use parameterized query to retrieve client by id
+            var client = await _context.Clients
+                                       .FromSqlInterpolated($"SELECT * FROM Clients WHERE Id = {id}")
+                                       .FirstOrDefaultAsync();
 
             // If client not found, return NotFound result
             if (client == null)
@@ -57,6 +61,7 @@ namespace BackEnd.Controllers
             // Return Ok with the client
             return Ok(client);
         }
+
 
         // POST: api/Clients/create
         [HttpPost("create")]
@@ -107,23 +112,25 @@ namespace BackEnd.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> PutClient(int id, Client client)
         {
-            // Execute SQL command to update client in database
+            // Execute SQL command to update client in database using parameterized query
             await _context.Database.ExecuteSqlRawAsync("UPDATE Clients SET Name = {0}, ClientCode = {1} WHERE Id = {2}", client.Name, client.ClientCode, id);
 
             // Return NoContent result
             return NoContent();
         }
 
+
         // DELETE: api/Clients/delete/{id}
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteClient(int id)
         {
-            // Execute SQL command to delete client from database
+            // Execute SQL command to delete client from database using parameterized query
             await _context.Database.ExecuteSqlRawAsync("DELETE FROM Clients WHERE Id = {0}", id);
 
             // Return NoContent result
             return NoContent();
         }
+
 
         // Method to generate client code based on client name
         private string GenerateClientCode(string name)

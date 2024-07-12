@@ -152,14 +152,14 @@ const Contacts = observer(({ contacts }: IProps) => {
 
       {/* Modal for creating a new contact */}
       <Modal isOpen={isModalOpen} onClose={closeCreateModal}>
-        <h2>Create contact</h2>
+        <h2 className="section-title">Create contact</h2>
         <ContactsForm setCloseModal={setIsModalOpen} />
         <button className='btn btn-danger' onClick={closeCreateModal}>Close Modal</button>
       </Modal>
 
       {/* Modal for viewing contact-client details */}
       <Modal isOpen={isModalOpenLink} onClose={closeCreateModalLink}>
-        <h2>Contact details and linked clients</h2>
+        <h2 className="section-title">Contact details and linked clients</h2>
         <ViewContactClientForm setCloseModal={setIsModalOpenLink} />
         <button className='btn btn-danger' onClick={closeCreateModalLink}>Close Modal</button>
       </Modal>

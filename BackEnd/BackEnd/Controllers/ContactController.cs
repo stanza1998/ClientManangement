@@ -1,6 +1,7 @@
 ﻿using BackEnd.Context;
 using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace BackEnd.Controllers
         {
             // Retrieve all contacts from database ordered by name and surname
             var contacts = await _context.Contacts
-                .FromSqlRaw("SELECT * FROM Contacts ORDER BY Name, Surname")
+                .OrderBy(c => c.Name).ThenBy(c => c.Surname)
                 .ToListAsync();
 
             // Return Ok with the list of contacts
@@ -37,9 +38,9 @@ namespace BackEnd.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(int id)
         {
-            // Retrieve contact by id from database
+            // Retrieve contact by id from database using parameterized query
             var contact = await _context.Contacts
-                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = {0}", id)
+                .FromSqlInterpolated($"SELECT * FROM Contacts WHERE Id = {id}")
                 .FirstOrDefaultAsync();
 
             // If contact not found, return NotFound result
@@ -56,8 +57,16 @@ namespace BackEnd.Controllers
         [HttpPost("create")]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
-            // Execute SQL command to insert new contact into database
-            await _context.Database.ExecuteSqlRawAsync("INSERT INTO Contacts (Name, Surname, Email) VALUES ({0}, {1}, {2})", contact.Name, contact.Surname, contact.Email);
+            // Execute SQL command to insert new contact into database using parameterized query
+            var sql = "INSERT INTO Contacts (Name, Surname, Email) VALUES (@Name, @Surname, @Email)";
+            var parameters = new[]
+            {
+                new SqlParameter("@Name", contact.Name),
+                new SqlParameter("@Surname", contact.Surname),
+                new SqlParameter("@Email", contact.Email)
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
 
             // Return CreatedAtAction with route values and contact object
             return CreatedAtAction(nameof(GetContact), new { id = contact.Id }, contact);
@@ -67,8 +76,17 @@ namespace BackEnd.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> PutContact(int id, Contact contact)
         {
-            // Execute SQL command to update contact in database
-            await _context.Database.ExecuteSqlRawAsync("UPDATE Contacts SET Name = {0}, Surname = {1}, Email = {2} WHERE Id = {3}", contact.Name, contact.Surname, contact.Email, id);
+            // Execute SQL command to update contact in database using parameterized query
+            var sql = "UPDATE Contacts SET Name = @Name, Surname = @Surname, Email = @Email WHERE Id = @Id";
+            var parameters = new[]
+            {
+                new SqlParameter("@Name", contact.Name),
+                new SqlParameter("@Surname", contact.Surname),
+                new SqlParameter("@Email", contact.Email),
+                new SqlParameter("@Id", id)
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
 
             // Return NoContent result
             return NoContent();
@@ -78,8 +96,11 @@ namespace BackEnd.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {
-            // Execute SQL command to delete contact from database
-            await _context.Database.ExecuteSqlRawAsync("DELETE FROM Contacts WHERE Id = {0}", id);
+            // Execute SQL command to delete contact from database using parameterized query
+            var sql = "DELETE FROM Contacts WHERE Id = @Id";
+            var parameter = new SqlParameter("@Id", id);
+
+            await _context.Database.ExecuteSqlRawAsync(sql, parameter);
 
             // Return NoContent result
             return NoContent();

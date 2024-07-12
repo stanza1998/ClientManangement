@@ -153,12 +153,12 @@ const Clients = observer(({ clients }: IProps) => {
 
       {/* Modals for creating and viewing clients */}
       <Modal isOpen={isModalOpen} onClose={closeCreateModal}>
-        <h2>Create Client</h2>
+        <h2 className="section-title">Create Client</h2>
         <ClientsForm setCloseModal={setIsModalOpen} />
         <button className="btn btn-danger" onClick={closeCreateModal}>Close Modal</button>
       </Modal>
       <Modal isOpen={isModalOpenView} onClose={closeCreateModalView}>
-        <h2>Client View</h2>
+        <h2 className="section-title">Client details and linked clients</h2>
         <ViewClientContactForm setCloseModal={setIsModalOpenView} />
         <button className="btn btn-danger" onClick={closeCreateModalView}>Close Modal</button>
       </Modal>

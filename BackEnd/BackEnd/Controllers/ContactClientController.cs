@@ -26,16 +26,12 @@ namespace BackEnd.Controllers
         [HttpPost("{contactId}/linkClient/{clientId}")]
         public async Task<IActionResult> LinkClientToContact(int contactId, int clientId)
         {
-            // Retrieve contact and client from database
+            // Retrieve contact and client from database safely using parameterized queries
             var contact = await _context.Contacts
-                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
-                    new SqlParameter("@ContactId", contactId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == contactId);
 
             var client = await _context.Clients
-                .FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
-                    new SqlParameter("@ClientId", clientId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == clientId);
 
             // If contact or client is not found, return NotFound result
             if (contact == null || client == null)
@@ -62,16 +58,12 @@ namespace BackEnd.Controllers
         [HttpDelete("{contactId}/unlinkClient/{clientId}")]
         public async Task<IActionResult> UnlinkClientFromContact(int contactId, int clientId)
         {
-            // Retrieve contact and client from database
+            // Retrieve contact and client from database safely using parameterized queries
             var contact = await _context.Contacts
-                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
-                    new SqlParameter("@ContactId", contactId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == contactId);
 
             var client = await _context.Clients
-                .FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
-                    new SqlParameter("@ClientId", clientId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == clientId);
 
             // If contact or client is not found, return NotFound result
             if (contact == null || client == null)
@@ -98,7 +90,7 @@ namespace BackEnd.Controllers
         [HttpGet("{contactId}/clients")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsForContact(int contactId)
         {
-            // SQL query to retrieve clients linked to a contact
+            // SQL query to retrieve clients linked to a contact using parameterized queries
             var sql = @"
                 SELECT c.*
                 FROM Clients c

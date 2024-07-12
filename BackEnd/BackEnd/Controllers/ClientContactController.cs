@@ -28,16 +28,12 @@ namespace BackEnd.Controllers
         [HttpPost("{clientId}/linkContact/{contactId}")]
         public async Task<IActionResult> LinkContactToClient(int clientId, int contactId)
         {
-            // Retrieve client and contact from database
+            // Retrieve client and contact from database safely using parameterized queries
             var client = await _context.Clients
-                .FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
-                    new SqlParameter("@ClientId", clientId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == clientId);
 
             var contact = await _context.Contacts
-                .FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
-                    new SqlParameter("@ContactId", contactId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == contactId);
 
             // If either client or contact is not found, return NotFound result
             if (client == null || contact == null)
@@ -64,12 +60,9 @@ namespace BackEnd.Controllers
         [HttpDelete("{clientId}/unlinkContact/{contactId}")]
         public async Task<IActionResult> UnlinkContactFromClient(int clientId, int contactId)
         {
-            // Retrieve ClientContact record from database
+            // Retrieve ClientContact record from database safely using parameterized queries
             var clientContact = await _context.ClientContacts
-                .FromSqlRaw("SELECT * FROM ClientContacts WHERE ClientId = @ClientId AND ContactId = @ContactId",
-                    new SqlParameter("@ClientId", clientId),
-                    new SqlParameter("@ContactId", contactId))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cc => cc.ClientId == clientId && cc.ContactId == contactId);
 
             // If ClientContact record is not found, return NotFound result
             if (clientContact == null)
@@ -96,7 +89,7 @@ namespace BackEnd.Controllers
         [HttpGet("{clientId}/contacts")]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContactsForClient(int clientId)
         {
-            // SQL query to retrieve contacts for a client
+            // SQL query to retrieve contacts for a client using parameterized queries
             var sql = @"
                 SELECT c.*
                 FROM Contacts c
