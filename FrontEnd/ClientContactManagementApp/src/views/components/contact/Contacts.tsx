@@ -125,8 +125,8 @@ const Contacts = observer(({ contacts }: IProps) => {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Surname</th>
-                <th style={{ textAlign: "center" }}># Linked clients</th>
-                <th>Actions</th>
+                <th style={{ textAlign: "center" }}>No. of Linked clients</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
