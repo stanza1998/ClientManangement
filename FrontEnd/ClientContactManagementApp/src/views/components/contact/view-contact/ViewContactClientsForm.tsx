@@ -88,8 +88,8 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
                                 <table className="clients-table">
                                     <thead>
                                         <tr>
-                                            <th>Full Name</th>
-                                            <th>Email</th>
+                                            <th>Client Name</th>
+                                            <th>Client Code</th>
                                             <th></th>
                                         </tr>
                                     </thead>

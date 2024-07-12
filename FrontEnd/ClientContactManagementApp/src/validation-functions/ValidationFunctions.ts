@@ -10,8 +10,8 @@ export function validateClientName(model: IClient): string | null {
   if (!model.name) {
     return "Name is required";
   }
-  if (model.name.length < 1 || model.name.length > 100) {
-    return "Name must be between 3 and 100 characters";
+  if (model.name.length <= 1 || model.name.length > 100) {
+    return "Name must be between 2 and 100 characters";
   }
   return null; // No validation errors
 }
