@@ -7,15 +7,17 @@ import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage';
 import TabComponentSub from '../../../../shared-components/tabs/SubTab';
 import LinkContactClientForm from '../Link-contact-client-form/LinkContactClientForm';
 import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
+import Pagination from '../../../../shared-components/pagination/Pagination';
 
 interface IProps {
     setCloseModal: (value: boolean) => void;
 }
 
-const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
+const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => {
     const { store, api } = useAppContext();
     const [contact, setContact] = useState<IContact>({ ...defaultContact });
     const [clients, setClients] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Function to handle unlinking a client from the contact
     const handleUnlinked = async (clientId: number) => {
@@ -45,6 +47,18 @@ const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
             setContact(store.contact.selected);
         }
     }, [store.contact.selected]);
+
+    // Pagination
+    const itemsPerPage = 5; // Number of items per page
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentClients = clients.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(clients.length / itemsPerPage);
+
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     // Tabs configuration for displaying different sections of the contact-client view
     const tabs = [
@@ -80,7 +94,7 @@ const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {clients.map((client) => (
+                                        {currentClients.map((client) => (
                                             <tr key={client.id}>
                                                 <td>{client.name}</td>
                                                 <td>{client.clientCode}</td>
@@ -91,6 +105,7 @@ const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
                                         ))}
                                     </tbody>
                                 </table>
+                                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                             </div>
                         )}
                     </div>
@@ -99,7 +114,7 @@ const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
         },
         {
             label: 'Link to client(s)',
-            content: <LinkContactClientForm linkedClients={clients} />
+            content: <LinkContactClientForm linkedClients={clients} setCloseModal={setCloseModal} />
         }
     ];
 

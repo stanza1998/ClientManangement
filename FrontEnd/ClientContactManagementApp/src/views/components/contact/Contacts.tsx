@@ -9,6 +9,7 @@ import ContactsForm from './contact-form/ContactForm';
 import Toolbar from '../../../shared-components/toolbar/ToolBar';
 import { getNumberOfClients } from '../client/clients/GetNumberOfContacts';
 import ViewContactClientForm from './view-contact/ViewContactClientsForm';
+import Pagination from '../../../shared-components/pagination/Pagination';
 
 interface IProps {
   contacts: IContact[]
@@ -90,6 +91,22 @@ const Contacts = observer(({ contacts }: IProps) => {
   </div>];
 
   // Rendering the component
+
+  // pagination codes
+  const itemsPerPage = 5; // Number of items per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalItems = contacts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = contacts.slice(indexOfFirstItem, indexOfLastItem);
+  // pagination codes
   return (
     <div className="contacts-container">
       <div style={{ marginBottom: "20px" }}>
@@ -101,33 +118,36 @@ const Contacts = observer(({ contacts }: IProps) => {
 
       {/* Displaying contacts in a table */}
       {contacts.length > 0 &&
-        <table className="clients-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Surname</th>
-              <th style={{ textAlign: "center" }}># Linked clients</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contacts.map((contact) => (
-              <tr key={contact.id}>
-                <td>{contact.name}</td>
-                <td>{contact.email}</td>
-                <td>{contact.surname}</td>
-                <td style={{ textAlign: "center" }}>
-                  {clientsCounts[contact.id] !== undefined ? clientsCounts[contact.id] : 'Loading...'}
-                </td>
-                <td>
-                  <button className='btn btn-primary' onClick={() => onLinkContact(contact)}>Details</button>
-                  <button className='btn btn-danger' onClick={() => onDelete(contact.id)}>Delete</button>
-                </td>
+        <div>
+          <table className="clients-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Surname</th>
+                <th style={{ textAlign: "center" }}># Linked clients</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentItems.map((contact) => (
+                <tr key={contact.id}>
+                  <td>{contact.name}</td>
+                  <td>{contact.email}</td>
+                  <td>{contact.surname}</td>
+                  <td style={{ textAlign: "center" }}>
+                    {clientsCounts[contact.id] !== undefined ? clientsCounts[contact.id] : 'Loading...'}
+                  </td>
+                  <td>
+                    <button className='btn btn-primary' onClick={() => onLinkContact(contact)}>Details</button>
+                    <button className='btn btn-danger' onClick={() => onDelete(contact.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        </div>
       }
 
       {/* Modal for creating a new contact */}

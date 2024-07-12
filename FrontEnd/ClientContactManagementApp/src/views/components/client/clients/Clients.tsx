@@ -9,6 +9,7 @@ import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage';
 import ViewClientContactForm from '../client-contact-link-component/ViewClientContactForm';
 import { getNumberOfContacts } from './GetNumberOfContacts';
 import Toolbar from '../../../../shared-components/toolbar/ToolBar';
+import Pagination from '../../../../shared-components/pagination/Pagination';
 
 interface IProps {
   clients: IClient[]; // Props for clients array
@@ -89,6 +90,22 @@ const Clients = observer(({ clients }: IProps) => {
     </div>
   ];
 
+  // pagination codes
+  const itemsPerPage = 5; // Number of items per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalItems = clients.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = clients.slice(indexOfFirstItem, indexOfLastItem);
+  // pagination codes
+
   return (
     <div className="clients-container">
       {/* Render toolbar with left, center, and right items */}
@@ -101,34 +118,37 @@ const Clients = observer(({ clients }: IProps) => {
 
       {/* Render clients table */}
       {clients.length > 0 &&
-        <table className="clients-table">
-          <thead>
-            <tr>
-              {/* <th>ID</th> */}
-              <th>Name</th>
-              <th>Client Code</th>
-              <th style={{ textAlign: "center" }}># Linked contacts</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr key={client.id}>
-                {/* <td>{client.id}</td> */}
-                <td>{client.name}</td>
-                <td>{client.clientCode}</td>
-                <td style={{ textAlign: "center" }}>
-                  {contactCounts[client.id] !== undefined ? contactCounts[client.id] : 'Loading...'}
-                </td>
-                <td>
-                  {/* Buttons for viewing details, deleting clients */}
-                  <button className="btn btn-primary" onClick={() => onViewContact(client)}>Details</button>
-                  <button className="btn btn-danger" onClick={() => onDelete(client.id)}>Delete</button>
-                </td>
+        <div>
+          <table className="clients-table">
+            <thead>
+              <tr>
+                {/* <th>ID</th> */}
+                <th>Name</th>
+                <th>Client Code</th>
+                <th style={{ textAlign: "center" }}># Linked contacts</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentItems.map((client) => (
+                <tr key={client.id}>
+                  {/* <td>{client.id}</td> */}
+                  <td>{client.name}</td>
+                  <td>{client.clientCode}</td>
+                  <td style={{ textAlign: "center" }}>
+                    {contactCounts[client.id] !== undefined ? contactCounts[client.id] : 'Loading...'}
+                  </td>
+                  <td>
+                    {/* Buttons for viewing details, deleting clients */}
+                    <button className="btn btn-primary" onClick={() => onViewContact(client)}>Details</button>
+                    <button className="btn btn-danger" onClick={() => onDelete(client.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        </div>
       }
 
       {/* Modals for creating and viewing clients */}

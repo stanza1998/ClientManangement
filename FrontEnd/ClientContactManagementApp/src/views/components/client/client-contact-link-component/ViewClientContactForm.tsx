@@ -1,21 +1,23 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ViewClientContactForm.css';
 import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
-import TabComponentSub from '../../../../shared-components/tabs/SubTab'; 
-import { getClientContactsById } from '../../../../helper-functions/GetAllLinkedData'; 
-import LinkClientContactForm from '../link-client-contact-form/LinkClientContactForm'; 
-import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage'; 
+import TabComponentSub from '../../../../shared-components/tabs/SubTab';
+import { getClientContactsById } from '../../../../helper-functions/GetAllLinkedData';
+import LinkClientContactForm from '../link-client-contact-form/LinkClientContactForm';
+import NoDataMessage from '../../../../shared-components/no-data/NoDataMessage';
+import Pagination from '../../../../shared-components/pagination/Pagination';
 
 interface IProps {
     setCloseModal: (value: boolean) => void;
 }
 
-const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
+const ViewClientContactForm: React.FC<IProps> = observer(({ setCloseModal }) => {
     const { store, api } = useAppContext();
     const [client, setClient] = useState<IClient>({ ...defaultClient });
-    const [contacts, setContacts] = useState<any[]>([]); // Array to hold client contacts
+    const [contacts, setContacts] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Function to handle unlinking a contact from the client
     const handleUnlinked = async (contactId: number) => {
@@ -24,6 +26,7 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
             window.location.reload(); // Reload the page after unlinking
         } catch (error) {
             // Handle error
+            console.error('Error unlinking contact from client:', error);
         }
     };
 
@@ -34,23 +37,37 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
         setCloseModal(false); // Close the modal
     };
 
+    // Fetches data (contacts linked to the client) when the client changes
     useEffect(() => {
         const loadData = async () => {
-            if (client) {
-                const contacts = await getClientContactsById(client.id); // Fetch client contacts
-                setContacts(contacts); // Update contacts state
+            if (client.id) {
+                const loadedContacts = await getClientContactsById(client.id);
+                setContacts(loadedContacts);
             }
         };
-        loadData(); // Load data on component mount or client change
+        loadData();
     }, [client]);
 
+    // Updates the local client state when the selected client changes in the store
     useEffect(() => {
         if (store.client.selected) {
-            setClient(store.client.selected); // Update client state when MobX selected client changes
+            setClient(store.client.selected);
         }
     }, [store.client.selected]);
 
-    // Tabs configuration
+    // Pagination
+    const itemsPerPage = 5; // Number of items per page
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentContacts = contacts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(contacts.length / itemsPerPage);
+
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    // Tabs configuration for displaying different sections of the client-contact view
     const tabs = [
         {
             label: 'General',
@@ -64,43 +81,43 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
                         <p><span>Client Code:</span> {client.clientCode}</p>
                     </div>
                 </div>
-            ),
+            )
         },
         {
             label: 'Contact(s)',
             content: (
                 <div>
                     <div className="form-group">
-                        {contacts?.length === 0 && <NoDataMessage message='No Contact(s) found' />} {/* Show message if no contacts */}
-                        {contacts?.length > 0 && (
-                            <div style={{ width: "100%" }}>
+                        {contacts.length === 0 && <NoDataMessage message='No Contact(s) found' />} {/* Show message if no contacts */}
+                        {contacts.length > 0 && (
+                            <div style={{ width: '100%' }}>
                                 <label htmlFor="name">Available contacts:</label>
                                 <table className="clients-table">
                                     <thead>
                                         <tr>
-                                            {/* <th>ID</th> */}
-                                            <th>Client Full Name</th>
+                                            <th>Full Name</th>
                                             <th>Email</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {contacts?.map((c) => (
-                                            <tr key={c.id}>
-                                                <td>{`${c.name} ${c.surname}`}</td>
-                                                <td>{c.email}</td>
+                                        {currentContacts.map((contact) => (
+                                            <tr key={contact.id}>
+                                                <td>{`${contact.name} ${contact.surname}`}</td>
+                                                <td>{contact.email}</td>
                                                 <td>
-                                                    <a href='' onClick={() => handleUnlinked(c.id)}>unlink contact</a>
+                                                    <a href='#!' onClick={() => handleUnlinked(contact.id)}>Unlink contact</a>
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
+                                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                             </div>
                         )}
                     </div>
                 </div>
-            ),
+            )
         },
         {
             label: "Link to contact",
@@ -108,6 +125,7 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
         },
     ];
 
+    // Renders the component using TabComponentSub with the configured tabs
     return (
         <TabComponentSub tabs={tabs} /> // Render TabComponentSub with defined tabs
     );
