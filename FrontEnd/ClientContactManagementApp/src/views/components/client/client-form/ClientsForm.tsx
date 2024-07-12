@@ -3,6 +3,8 @@ import './ClientsForm.css';
 import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
+import { validateClientName } from '../../../../validation-functions/ValidationFunctions';
+import ErrorMessage from '../../../../shared-components/error-message/ErrorMessage';
 
 
 interface IProps {
@@ -11,31 +13,42 @@ interface IProps {
 
 const ClientsForm = observer(({ setCloseModal }: IProps) => {
   const { store, api } = useAppContext();
+  const [nameErrorMessage, setNameErrorMessage] = useState("")
   const [client, setClient] = useState<IClient>({
     ...defaultClient,
     name: ""
- });
+  });
+
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setNameErrorMessage("")
+    const validationError = validateClientName(client);
+    if (validationError) {
+      setNameErrorMessage(validationError)
+      setClient({
+        ...defaultClient,
+        name: ""
+      })
+      return; // Exit early if validation fails
+    }
+
     const $client: IClient = {
       id: 0,
       name: client.name,
-      clientCode: ""
-    }
+      clientCode: ''
+    };
 
     try {
       await api.client.create($client);
       await api.client.getAll();
       onClose();
     } catch (error) {
-
+      console.error('Error:', error);
 
     }
-
   };
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,6 +76,7 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
+          {nameErrorMessage && <ErrorMessage errorMessage={nameErrorMessage} />}
           <label htmlFor="name">Name:</label>
           <input
             className="input"

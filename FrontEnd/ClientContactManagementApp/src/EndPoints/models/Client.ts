@@ -3,7 +3,7 @@ import AppStore from "../stores/AppStore";
 
 export const defaultClient: IClient = {
   id: 0,
-  name: 0,
+  name: "",
   clientCode: "",
 };
 
@@ -13,6 +13,9 @@ export interface IClient {
   clientCode: string;
 }
 
+export interface IValidationErrors {
+  [key: string]: string;
+}
 export default class ClientModel {
   private client: IClient;
 

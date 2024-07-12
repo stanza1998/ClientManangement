@@ -3,14 +3,14 @@ import AppStore from "../stores/AppStore";
 
 export const defaultContact: IContact = {
   id: 0,
-  name: 0,
+  name: "",
   surname: "",
   email: "",
 };
 
 export interface IContact {
   id: number;
-  name: number;
+  name: string;
   surname: string;
   email: string;
 }

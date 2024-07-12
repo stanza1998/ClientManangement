@@ -3,6 +3,8 @@ import './ContactForm.css';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
 import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
+import { validateContact } from '../../../../validation-functions/ValidationFunctions';
+import ErrorMessage from '../../../../shared-components/error-message/ErrorMessage';
 
 
 interface IProps {
@@ -12,17 +14,31 @@ interface IProps {
 const ContactsForm = observer(({ setCloseModal }: IProps) => {
   const { store, api } = useAppContext();
   const [contact, setContact] = useState<IContact>({ ...defaultContact });
-
+  const [nameErrorMessage, setNameErrorMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Validate the contact object
+    const validationError = validateContact(contact);
+    if (validationError) {
+      setNameErrorMessage(validationError)
+      setContact({
+        ...defaultContact,
+        name: "",
+        surname: "",
+        email: ""
+
+      })
+      return; // Exit early if validation fails
+    }
+
     const $contact: IContact = {
       id: 0,
-      name: contact.name,
-      surname: contact.surname,
-      email: contact.email
-    }
+      name: contact.name || '',
+      surname: contact.surname || '',
+      email: contact.email || ''
+    };
 
     try {
       await api.contact.create($contact);
@@ -30,11 +46,11 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
       await api.contact.getAll();
       onClose();
     } catch (error) {
-
-
+      console.error('Error:', error);
+      // Handle error state or display error message to the user
     }
-
   };
+
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +78,8 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit}>
+        {nameErrorMessage && <ErrorMessage errorMessage={nameErrorMessage} />}
+
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input
@@ -85,7 +103,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
         <div className="form-group">
           <label htmlFor="name">Email:</label>
           <input
-            type="email"
+            type="text"
             id="email"
             name="email"
             value={contact.email}
