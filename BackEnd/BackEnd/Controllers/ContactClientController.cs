@@ -79,7 +79,9 @@ namespace BackEnd.Controllers
                 SELECT c.*
                 FROM Clients c
                 INNER JOIN ClientContacts cc ON c.Id = cc.ClientId
-                WHERE cc.ContactId = @ContactId";
+                WHERE cc.ContactId = @ContactId
+                ORDER BY c.Name ASC"; // Order by name ascending
+
             var parameter = new SqlParameter("@ContactId", contactId);
 
             var clients = await _context.Clients.FromSqlRaw(sql, parameter).ToListAsync();
