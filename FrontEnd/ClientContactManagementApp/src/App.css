@@ -1,0 +1,139 @@
+/* Base button styling */
+/* button end */
+.btn {
+  border: none;
+  color: white;
+  padding: 8px 16px; /* Slightly smaller padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px; /* Smaller font size */
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition-duration: 0.4s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Danger button styling */
+.btn-danger {
+  background-color: #ff4b5c;
+}
+
+.btn-danger:hover {
+  background-color: #ff7b8c;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Primary button styling */
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* button end */
+/* table */
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Inter", sans-serif;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clients-table th,
+.clients-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.clients-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.clients-table td {
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.clients-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.clients-table tr:nth-child(even) {
+  background-color: #f3f4f6;
+}
+
+.clients-table th:first-child,
+.clients-table td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.clients-table th:last-child,
+.clients-table td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* table */
+
+/* General info */
+
+.general-info-container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: "Inter", sans-serif;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group p {
+  font-size: 16px;
+  color: #4b5563;
+  margin: 0;
+}
+
+.form-group p span {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.general-info-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .general-info-container {
+    padding: 15px;
+  }
+
+  .form-group p {
+    font-size: 14px;
+  }
+
+  .general-info-container h2 {
+    font-size: 20px;
+  }
+}
+
+/* General info */

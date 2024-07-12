@@ -43,6 +43,34 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{contactId}/unlinkContact/{clientId}")]
+        public async Task<IActionResult> UnlinkClientFromContact(int contactId, int clientId)
+        {
+            // Check if the contact and client exist
+            var contact = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts WHERE Id = @ContactId",
+                new SqlParameter("@ContactId", contactId)).FirstOrDefaultAsync();
+            var client = await _context.Clients.FromSqlRaw("SELECT * FROM Clients WHERE Id = @ClientId",
+                new SqlParameter("@ClientId", clientId)).FirstOrDefaultAsync();
+
+            if (contact == null || client == null)
+            {
+                return NotFound();
+            }
+
+            // Delete the link between the client and the contact
+            var sql = "DELETE FROM ClientContacts WHERE ContactId = @ContactId AND ClientId = @ClientId";
+            var parameters = new[]
+            {
+        new SqlParameter("@ContactId", contactId),
+        new SqlParameter("@ClientId", clientId)
+    };
+
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+
+            return NoContent();
+        }
+
+
         // Get Clients linked to a Contact
         [HttpGet("{contactId}/clients")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsForContact(int contactId)

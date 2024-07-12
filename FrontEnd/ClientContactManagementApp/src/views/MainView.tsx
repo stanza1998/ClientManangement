@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import TabComponent from "../shared-components/Tab";
 import Clients from "./components/client/clients/Clients";
 import Contacts from "./components/contact/Contacts";
-import ClientContact from "./components/client-contact/ClientContacts";
 
 export const MainView = observer(() => {
     const { store, api } = useAppContext();
@@ -15,7 +14,6 @@ export const MainView = observer(() => {
     const tabs = [
         { label: 'Clients', content: <Clients clients={clients} /> },
         { label: 'Contacts', content: <Contacts contacts={contacts} /> },
-        { label: 'Client-Contacts', content: <ClientContact /> },
     ];
 
 
@@ -32,8 +30,6 @@ export const MainView = observer(() => {
 
 
     return (
-        <div>
-            <TabComponent tabs={tabs} />
-        </div>
+        <TabComponent tabs={tabs} />
     )
 })

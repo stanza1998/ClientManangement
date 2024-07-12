@@ -22,13 +22,14 @@ namespace BackEnd.Controllers
         [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
-            var clients = await _context.Clients.FromSqlRaw("SELECT * FROM Clients").ToListAsync();
+            var clients = await _context.Clients.FromSqlRaw("SELECT * FROM Clients ORDER BY Name ASC").ToListAsync();
             if (clients == null || !clients.Any())
             {
                 return Ok("No client(s) found.");
             }
             return Ok(clients);
         }
+
 
         // GET: api/Clients/5
         [HttpGet("{id}")]

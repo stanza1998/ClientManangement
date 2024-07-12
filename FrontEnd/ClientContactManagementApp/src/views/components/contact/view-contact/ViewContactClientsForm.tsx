@@ -1,62 +1,55 @@
 import { useEffect, useState } from 'react';
-import './ViewClientContactForm.css';
-import { IClient, defaultClient } from '../../../../EndPoints/models/Client';
+import './ViewContactClientForm.css';
 import { observer } from 'mobx-react-lite';
 import { useAppContext } from '../../../../context/Context';
-import TabComponent from '../../../../shared-components/Tab';
-import { getClientContactsById } from '../../../../helper-functions/GetAllLinkedData';
-import LinkClientContactForm from '../link-client-contact-form/LinkClientContactForm';
+import { getContactClientsById } from '../../../../helper-functions/GetAllLinkedData';
 import NoDataMessage from '../../../../shared-components/NoDataMessage';
 import TabComponentSub from '../../../../shared-components/SubTab';
+import LinkContactClientForm from '../Link-contact-client-form/LinkContactClientForm';
+import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
 
 
 interface IProps {
     setCloseModal: (value: boolean) => void;
 }
 
-const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
+const ViewContactClientForm = observer(({ setCloseModal }: IProps) => {
     const { store, api } = useAppContext();
-    const [client, setClient] = useState<IClient>({ ...defaultClient });
-    const [contacts, setContacts] = useState<any[]>();
+    const [contact, setContact] = useState<IContact>({ ...defaultContact });
+    const [clients, setClients] = useState<any[]>();
 
 
-    const handleUnlinked = async (contactId: number) => {
+    const handleUnlinked = async (clientId: number) => {
         try {
-            await api.clientContact.unlinkContactToClient(client.id, contactId);
+            await api.clientContact.unlinkContactClientToContact(contact.id, clientId);
             window.location.reload();
         } catch (error) {
         }
     };
 
 
-    const onClose = () => {
-        setClient({ ...defaultClient })
-        store.client.clearSelected;
-        setCloseModal(false)
-    }
 
 
     useEffect(() => {
         const loadData = async () => {
-            if (client) {
-                const contacts = await getClientContactsById(client.id)
-                setContacts(contacts)
+            if (contact) {
+                const clients = await getContactClientsById(contact.id)
+                setClients(clients)
             } else {
 
             }
         }
         loadData()
-    }, [client])
+    }, [contact])
 
     useEffect(() => {
-        if (store.client.selected) {
-            setClient(store.client.selected);
+        if (store.contact.selected) {
+            setContact(store.contact.selected);
         } else {
 
         }
-    }, [store.client.selected])
+    }, [store.contact.selected])
 
-    //tabs info
 
     const tabs = [
         {
@@ -65,37 +58,37 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
                 <div className="general-info-container">
                     <h2>General Information</h2>
                     <div className="form-group">
-                        <p><span>Name:</span> {client.name}</p>
+                        <p><span>Full Name:</span> {contact.name}</p>
                     </div>
                     <div className="form-group">
-                        <p><span>Client Code:</span> {client.clientCode}</p>
+                        <p><span>Email</span> {contact.email}</p>
                     </div>
                 </div>
         },
         {
-            label: 'Contact(s)', content:
+            label: 'Clients(s)', content:
                 <>
                     <div >
                         <div className="form-group">
-                            {contacts?.length === 0 && <NoDataMessage message='No Contact(s) found' />}
-                            {contacts?.length > 0 &&
+                            {clients?.length === 0 && <NoDataMessage message='No Client(s) found' />}
+                            {clients?.length > 0 &&
                                 <div style={{ width: "100%" }}>
                                     <label htmlFor="name">Available contacts:</label>
                                     <table className="clients-table">
                                         <thead>
                                             <tr>
                                                 {/* <th>ID</th> */}
-                                                <th>Client Full Name</th>
+                                                <th>Full Name</th>
 
                                                 <th>Email</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {contacts?.map((c) => (
+                                            {clients?.map((c) => (
                                                 <tr key={c.id}>
-                                                    <td>{`${c.name} ${c.surname}`}</td>
-                                                    <td>{c.email}</td>
+                                                    <td>{c.name}</td>
+                                                    <td>{c.clientCode}</td>
                                                     <td>
                                                         <a href='' onClick={() => handleUnlinked(c.id)}>unlink contact</a>
                                                     </td>
@@ -111,8 +104,8 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
 
         },
         {
-            label: "Link to contact",
-            content: <LinkClientContactForm linkedContacts={contacts} />
+            label: "Link to client(s)",
+            content: <LinkContactClientForm linkedClients={clients} />
         }
     ];
 
@@ -124,4 +117,4 @@ const ViewClientContactForm = observer(({ setCloseModal }: IProps) => {
     );
 });
 
-export default ViewClientContactForm;
+export default ViewContactClientForm;

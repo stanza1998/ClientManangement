@@ -1,11 +1,14 @@
 import { observer } from 'mobx-react-lite';
 import './Contacts.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IContact } from '../../../EndPoints/models/Contact';
 import { useAppContext } from '../../../context/Context';
 import NoDataMessage from '../../../shared-components/NoDataMessage';
 import Modal from '../../../shared-components/Modal';
 import ContactsForm from './contact-form/ContactForm';
+import Toolbar from '../../../shared-components/ToolBar';
+import { getNumberOfClients } from '../client/clients/GetNumberOfContacts';
+import ViewContactClientForm from './view-contact/ViewContactClientsForm';
 
 interface IProps {
   contacts: IContact[]
@@ -16,6 +19,20 @@ const Contacts = observer(({ contacts }: IProps) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenLink, setIsModalOpenLink] = useState(false);
+  const [cleintsCounts, setClientsCounts] = useState<any>({});
+
+  useEffect(() => {
+    async function fetchAllContactLengths() {
+      const counts: any = {};
+      for (const contact of contacts) {
+        counts[contact.id] = await getNumberOfClients(contact.id);
+      }
+      setClientsCounts(counts);
+    }
+
+    fetchAllContactLengths();
+  }, [contacts]);
+
 
   const openCreateModal = () => {
     setIsModalOpen(true);
@@ -54,42 +71,48 @@ const Contacts = observer(({ contacts }: IProps) => {
     }
   };
 
-
+  const leftItems = [<div key="1">List Of Contacts</div>];
+  const centerItems = [<div></div>];
+  const rightItems = [<div key="1">
+    <button className='btn btn-primary' onClick={onCreate}>Create</button>
+  </div>];
 
   return (
 
     <div className="contacts-container">
-      <div>
-        <h4>List Of contacts</h4>
-        <button onClick={onCreate}>Create</button>
+      <div style={{ marginBottom: "20px" }}>
+        <Toolbar leftItems={leftItems} centerItems={centerItems} rightItems={rightItems} />
       </div>
+
 
       {contacts.length === 0 && <NoDataMessage message={'No contact(s) found'} />}
 
       {contacts.length > 0 &&
-        <table className="contacts-table">
+        <table className="clients-table">
           <thead>
             <tr>
-              <th>ID</th>
+              {/* <th>ID</th> */}
               <th>Name</th>
               <th>Surname</th>
               <th>Email</th>
-              <th># Linked clients</th>
+              <th style={{ textAlign: "center" }}># Linked clients</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {contacts.map((contact) => (
               <tr key={contact.id}>
-                <td>{contact.id}</td>
+                {/* <td>{contact.id}</td> */}
                 <td>{contact.name}</td>
                 <td>{contact.email}</td>
                 <td>{contact.surname}</td>
-                <td>34</td>
+                <td style={{ textAlign: "center" }}>
+                  {cleintsCounts[contact.id] !== undefined ? cleintsCounts[contact.id] : 'Loading...'}
+                </td>
                 <td>
                   {/* <button onClick={() => onEdit(contact)} >Edit</button> */}
-                  <button onClick={() => onDelete(contact.id)}>Delete</button>
-                  <button onClick={() => onLinkContact(contact)}>link to contact</button>
+                  <button className='btn btn-primary' onClick={() => onLinkContact(contact)}>Details</button>
+                  <button className='btn btn-danger' onClick={() => onDelete(contact.id)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -100,12 +123,12 @@ const Contacts = observer(({ contacts }: IProps) => {
       <Modal isOpen={isModalOpen} onClose={closeCreateModal}>
         <h2>Create contact</h2>
         <ContactsForm setCloseModal={setIsModalOpen} />
-        <button onClick={closeCreateModal}>Close Modal</button>
+        <button className='btn btn-danger' onClick={closeCreateModal}>Close Modal</button>
       </Modal>
       <Modal isOpen={isModalOpenLink} onClose={closeCreateModalLink}>
         <h2>Create contact</h2>
-        {/* <LinkcontactContactForm setCloseModal={setIsModalOpenLink} /> */}
-        <button onClick={closeCreateModalLink}>Close Modal</button>
+        <ViewContactClientForm setCloseModal={setIsModalOpenLink} />
+        <button className='btn btn-danger' onClick={closeCreateModalLink}>Close Modal</button>
       </Modal>
     </div>
   );

@@ -76,10 +76,11 @@ namespace BackEnd.Controllers
         public async Task<ActionResult<IEnumerable<Contact>>> GetContactsForClient(int clientId)
         {
             var sql = @"
-                SELECT c.*
-                FROM Contacts c
-                INNER JOIN ClientContacts cc ON c.Id = cc.ContactId
-                WHERE cc.ClientId = @ClientId";
+        SELECT c.*
+        FROM Contacts c
+        INNER JOIN ClientContacts cc ON c.Id = cc.ContactId
+        WHERE cc.ClientId = @ClientId
+        ORDER BY c.Name, c.Surname";
             var parameter = new SqlParameter("@ClientId", clientId);
 
             var contacts = await _context.Contacts.FromSqlRaw(sql, parameter).ToListAsync();
@@ -91,5 +92,6 @@ namespace BackEnd.Controllers
 
             return Ok(contacts);
         }
+
     }
 }

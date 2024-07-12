@@ -11,7 +11,10 @@ interface IProps {
 
 const ClientsForm = observer(({ setCloseModal }: IProps) => {
   const { store, api } = useAppContext();
-  const [client, setClient] = useState<IClient>({ ...defaultClient });
+  const [client, setClient] = useState<IClient>({
+    ...defaultClient,
+    name: ""
+ });
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,10 +65,12 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input
+            className="input"
             type="text"
             id="name"
             name="name"
             value={client.name}
+            placeholder="Enter client name" // Add a placeholder
             onChange={handleChange}
           />
         </div>

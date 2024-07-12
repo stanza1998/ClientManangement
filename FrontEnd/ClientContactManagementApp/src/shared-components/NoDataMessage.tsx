@@ -1,14 +1,14 @@
-import React from 'react';
 import './NoDataMessage.css';
 
-interface NoDataMessageProps {
-    message: string;
+interface IProps {
+    message:string;
 }
 
-const NoDataMessage: React.FC<NoDataMessageProps> = ({ message }) => {
+const NoDataMessage = ({message}:IProps) => {
     return (
         <div className="no-data-message">
-            <p>{message}</p>
+            <div className="no-data-icon">🚫</div>
+            <div className="no-data-text">{message}</div>
         </div>
     );
 };

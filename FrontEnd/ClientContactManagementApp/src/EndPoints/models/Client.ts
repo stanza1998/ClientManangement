@@ -9,7 +9,7 @@ export const defaultClient: IClient = {
 
 export interface IClient {
   id: number;
-  name: number;
+  name: string;
   clientCode: string;
 }
 

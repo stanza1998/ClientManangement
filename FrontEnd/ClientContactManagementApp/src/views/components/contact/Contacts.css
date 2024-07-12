@@ -1,5 +1,5 @@
 .contacts-container {
-  width: 80%;
+  width: 90%;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -9,26 +9,6 @@
 
 .contacts-container h4 {
   font-size: 1.5rem;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 
-.contacts-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.contacts-table th,
-.contacts-table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.contacts-table th {
-  background-color: #f1f1f1;
-  font-weight: bold;
-}
-
-.contacts-table tr:hover {
-  background-color: #f9f9f9;
-}

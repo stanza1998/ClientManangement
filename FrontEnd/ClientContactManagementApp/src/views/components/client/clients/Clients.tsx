@@ -10,6 +10,7 @@ import LinkClientContactForm from '../link-client-contact-form/LinkClientContact
 import { getAllLinkedData } from '../../../../helper-functions/GetAllLinkedData';
 import ViewClientContactForm from '../client-contact-link-component/ViewClientContactForm';
 import { getNumberOfContacts } from './GetNumberOfContacts';
+import Toolbar from '../../../../shared-components/ToolBar';
 
 
 interface IProps {
@@ -18,14 +19,8 @@ interface IProps {
 
 const Clients = observer(({ clients }: IProps) => {
   const { store, api } = useAppContext();
-  const [numberOfContacts, setNumberOfContacts] = useState(0);
-
-
-
-
-
+  const [contactCounts, setContactCounts] = useState<any>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isModalOpenView, setIsModalOpenView] = useState(false);
 
   const openCreateModal = () => {
@@ -69,11 +64,10 @@ const Clients = observer(({ clients }: IProps) => {
       }
     }
   };
-  const [contactCounts, setContactCounts] = useState<any>({});
 
   useEffect(() => {
     async function fetchAllContactLengths() {
-      const counts:any = {};
+      const counts: any = {};
       for (const client of clients) {
         counts[client.id] = await getNumberOfContacts(client.id);
       }
@@ -85,23 +79,25 @@ const Clients = observer(({ clients }: IProps) => {
 
 
 
-  useEffect(() => {
-    const loadData = async () => {
-      const linkedData = await getAllLinkedData(clients);
+  
 
+  const leftItems = [<div key="1">List Of Clients</div>];
+  const centerItems = [<div></div>];
+  const rightItems = [<div key="1">
+    <button className="btn btn-primary" onClick={onCreate}>Create</button>
+  </div>];
 
-    }
-    loadData()
-  })
 
 
   return (
 
     <div className="clients-container">
-      <div>
-        <h4>List Of Clients</h4>
-        <button onClick={onCreate}>Create</button>
+      <div style={{ marginBottom: "20px" }}>
+        <Toolbar leftItems={leftItems} centerItems={centerItems} rightItems={rightItems} />
       </div>
+
+
+
 
       {clients.length === 0 && <NoDataMessage message={'No client(s) found'} />}
 
@@ -109,25 +105,25 @@ const Clients = observer(({ clients }: IProps) => {
         <table className="clients-table">
           <thead>
             <tr>
-              <th>ID</th>
+              {/* <th>ID</th> */}
               <th>Name</th>
               <th>Client Code</th>
               <th style={{ textAlign: "center" }}># Linked contacts</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {clients.map((client) => (
               <tr key={client.id}>
-                <td>{client.id}</td>
+                {/* <td>{client.id}</td> */}
                 <td>{client.name}</td>
                 <td>{client.clientCode}</td>
                 <td style={{ textAlign: "center" }}>
                   {contactCounts[client.id] !== undefined ? contactCounts[client.id] : 'Loading...'}
                 </td>
                 <td>
-                  <button onClick={() => onViewContact(client)}>Details</button>
-                  <button onClick={() => onDelete(client.id)}>Delete</button>
+                  <button className="btn btn-primary" onClick={() => onViewContact(client)}>Details</button>
+                  <button className="btn btn-danger" onClick={() => onDelete(client.id)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -138,12 +134,12 @@ const Clients = observer(({ clients }: IProps) => {
       <Modal isOpen={isModalOpen} onClose={closeCreateModal}>
         <h2>Create Client</h2>
         <ClientsForm setCloseModal={setIsModalOpen} />
-        <button onClick={closeCreateModal}>Close Modal</button>
+        <button className="btn btn-danger" onClick={closeCreateModal}>Close Modal</button>
       </Modal>
       <Modal isOpen={isModalOpenView} onClose={closeCreateModalView}>
         <h2>Client View</h2>
         <ViewClientContactForm setCloseModal={setIsModalOpenView} />
-        <button onClick={closeCreateModalView}>Close Modal</button>
+        <button className="btn btn-danger" onClick={closeCreateModalView}>Close Modal</button>
       </Modal>
     </div>
   );

@@ -20,3 +20,22 @@ export async function getNumberOfContacts(clientId: number) {
 
   return 0;
 }
+export async function getNumberOfClients(clientId: number) {
+  const baseUrl = "https://localhost:7286/api/ContactClient";
+
+  try {
+    // Fetch contacts for the specified client ID
+    const response = await axios.get<IClientContact[]>(
+      `${baseUrl}/${clientId}/clients`
+    );
+
+    return response.data.map((d) => {
+      return d;
+    }).length;
+  } catch (error) {
+    console.error("Error fetching client contacts:", error);
+    return 0;
+  }
+
+  return 0;
+}

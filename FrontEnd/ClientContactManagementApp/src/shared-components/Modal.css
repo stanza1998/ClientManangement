@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, .9); /* semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.9); /* semi-transparent background */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,12 +20,12 @@
 
 .modal {
   background-color: white;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  /* max-width: 100%; */
+  max-width: 100%;
 
-  width: 50%;
+  width: 70%;
   overflow: auto;
   opacity: 0;
   transform: translateY(-50px);
@@ -53,6 +53,4 @@
   color: #555;
 }
 
-.modal-content {
-  /* Add additional styles as needed for the modal content */
-}
+

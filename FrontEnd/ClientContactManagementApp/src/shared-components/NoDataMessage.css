@@ -1,5 +1,6 @@
 .no-data-message {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 200px; /* Adjust height as needed */
@@ -11,4 +12,28 @@
   font-family: 'Arial', sans-serif; /* Font family */
   margin: 20px; /* Margin around the message box */
   text-align: center; /* Center text */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.no-data-message:hover {
+  background-color: #e9ecef; /* Slightly darker background on hover */
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+.no-data-icon {
+  font-size: 48px; /* Large icon size */
+  margin-bottom: 10px; /* Space between icon and text */
+  color: #6c757d; /* Icon color */
+  animation: pulse 2s infinite; /* Simple pulse animation */
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.no-data-text {
+  font-weight: bold;
+  color: #343a40; /* Darker text color */
 }

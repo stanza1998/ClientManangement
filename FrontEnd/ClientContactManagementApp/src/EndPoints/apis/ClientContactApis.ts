@@ -42,4 +42,31 @@ export default class ClientContactApi {
       console.error("Error retrieving contacts for client:", error);
     }
   }
+
+
+  // contact to client
+   async unlinkContactClientToContact( contactId: number, clientId: number) {
+    try {
+      const response = await axios.delete(
+        `https://localhost:7286/api/ContactClient/${contactId}/unlinkClient/${clientId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error unlinking contact from client:", error);
+      throw error;
+    }
+  }
+
+    async linkContactClientToContact(contactId: number, clientId: number) {
+    try {
+      const response = await axios.post(
+         `https://localhost:7286/api/ContactClient/${clientId}/linkClient/${contactId}`
+      );
+      if (response.status === 204) {
+        // You can refresh the contacts list or perform any other actions as needed
+      }
+    } catch (error) {
+      console.error("Error linking contact to client:", error);
+    }
+  }
 }

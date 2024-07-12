@@ -91,7 +91,7 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
 
                     </div>
 
-                    <button type="submit" className="btn-submit">
+                    <button type="submit" className="btn btn-primary">
                         Create Link(s)
                     </button>
                 </form>

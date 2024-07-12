@@ -20,9 +20,10 @@ namespace BackEnd.Controllers
         [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
-            var contacts = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts").ToListAsync();
+            var contacts = await _context.Contacts.FromSqlRaw("SELECT * FROM Contacts ORDER BY Name, Surname").ToListAsync();
             return Ok(contacts);
         }
+
 
         // GET: api/Contacts/5
         [HttpGet("{id}")]
