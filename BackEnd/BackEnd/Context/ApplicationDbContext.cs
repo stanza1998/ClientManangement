@@ -18,6 +18,7 @@ namespace BackEnd.Context
         public DbSet<Client> Clients { get; set; } // DbSet for Client entity
         public DbSet<Contact> Contacts { get; set; } // DbSet for Contact entity
         public DbSet<ClientContact> ClientContacts { get; set; } // DbSet for ClientContact entity
+     public DbSet<User> Users { get; set; } //DbSet for system users
 
         // Method to configure the database model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
