@@ -28,7 +28,7 @@ const LogoutButton: React.FC = () => {
             }
 
             // Perform any client-side logout actions if necessary (e.g., clear local storage)
-            localStorage.removeItem('userEmail'); // Clear the email from local storage
+            localStorage.removeItem('email'); // Clear the email from local storage
             console.log('Logout successful');
             window.location.reload();
         } catch (error) {
