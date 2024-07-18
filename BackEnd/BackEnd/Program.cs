@@ -1,4 +1,5 @@
 using BackEnd.Context;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,11 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod());
 });
 
+// Add services to the container.
+builder.Services.AddTransient<EmailService>(provider =>
+    new EmailService("smtp.gmail.com", 587, "narib98jerry@gmail.com", "fdff upni wmzr caot"));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +36,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
