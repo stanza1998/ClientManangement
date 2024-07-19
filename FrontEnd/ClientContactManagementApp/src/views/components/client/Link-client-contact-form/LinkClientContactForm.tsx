@@ -79,32 +79,34 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
     }, [store.client.selected]);
 
     return (
-        <div className="form-container">
+        <>
             {contacts.length === 0 && <NoDataMessage message="This client is linked to all contacts in the database" />}
             {contacts.length > 0 &&
-                <>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="name">{selectedContactIds.length > 0 ? `${selectedContactIds.length} contact(s) selected` : "Available contacts"}</label>
-                            {currentContacts.map((c) => (
-                                <label key={c.id}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedContactIds.includes(c.id)}
-                                        onChange={() => handleCheckboxChange(c.id)}
-                                    />
-                                    {c.name} {c.surname}
-                                </label>
-                            ))}
-                        </div>
-                        <button type="submit" className="btn btn-primary">
-                            Create Link(s)
-                        </button>
-                    </form>
-                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-                </>
+                <div className="form-container">
+                    <>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="name">{selectedContactIds.length > 0 ? `${selectedContactIds.length} contact(s) selected` : "Available contacts"}</label>
+                                {currentContacts.map((c) => (
+                                    <label key={c.id}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedContactIds.includes(c.id)}
+                                            onChange={() => handleCheckboxChange(c.id)}
+                                        />
+                                        {c.name} {c.surname}
+                                    </label>
+                                ))}
+                            </div>
+                            <button type="submit" className="btn btn-primary">
+                                Create Link(s)
+                            </button>
+                        </form>
+                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+                    </>
+                </div>
             }
-        </div>
+        </>
     );
 });
 

@@ -86,7 +86,7 @@ const Clients = observer(({ clients }: IProps) => {
   const centerItems: JSX.Element[] = [];
   const rightItems = [
     <div key="1">
-      <button className="btn btn-primary" onClick={onCreate}>Create</button>
+      <button className="btn btn-primary-outline" onClick={onCreate}>Create</button>
     </div>
   ];
 

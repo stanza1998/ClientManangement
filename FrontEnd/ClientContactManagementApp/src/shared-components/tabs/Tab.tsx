@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import './TabComponent.css'; // Example CSS for styling tabs
 import LogoutButton from '../../views/log-out/Logout';
 
+
 interface Tab {
+    icon?: JSX.Element
     label: string;
     content: React.ReactNode;
 }
 
 interface TabComponentProps {
     tabs: Tab[];
+
 }
 
 const TabComponent: React.FC<TabComponentProps> = ({ tabs }) => {

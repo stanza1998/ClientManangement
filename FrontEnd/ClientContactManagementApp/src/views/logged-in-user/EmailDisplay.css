@@ -1,0 +1,18 @@
+.email-display {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    z-index: 1000;
+}
+
+.email-display p {
+    margin: 0;
+}

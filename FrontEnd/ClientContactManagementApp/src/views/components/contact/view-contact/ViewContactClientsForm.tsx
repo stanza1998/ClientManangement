@@ -8,6 +8,7 @@ import TabComponentSub from '../../../../shared-components/tabs/SubTab';
 import LinkContactClientForm from '../Link-contact-client-form/LinkContactClientForm';
 import { IContact, defaultContact } from '../../../../EndPoints/models/Contact';
 import Pagination from '../../../../shared-components/pagination/Pagination';
+import Toolbar from '../../../../shared-components/toolbar/ToolBar';
 
 interface IProps {
     setCloseModal: (value: boolean) => void;
@@ -18,6 +19,9 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
     const [contact, setContact] = useState<IContact>({ ...defaultContact });
     const [clients, setClients] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedClientIds, setSelectedClientIds] = useState<number[]>([]);
+    const [selectAll, setSelectAll] = useState<boolean>(false);
+
 
     // Function to handle unlinking a client from the contact
     const handleUnlinked = async (clientId: number) => {
@@ -28,6 +32,40 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
             console.error('Error unlinking contact from client:', error);
             // Handle error state or display error message to the user
         }
+    };
+
+    const unLinkSelectedClients = async () => {
+        try {
+            await Promise.all(selectedClientIds.map(async (id) => {
+                await api.clientContact.unlinkContactClientToContact(contact.id, id);
+            }));
+            window.location.reload(); // Reload the page after all unlinking operations are complete
+        } catch (error) {
+            // Handle error
+            console.error('Error unlinking contacts from client:', error);
+        }
+    };
+
+    const handleSelectAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        setSelectAll(isChecked);
+        if (isChecked) {
+            const allContactIds = currentClients.map(client => client.id);
+            setSelectedClientIds(allContactIds);
+        } else {
+            setSelectedClientIds([]);
+        }
+    };
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, clientId: number) => {
+        const isChecked = e.target.checked;
+        setSelectedClientIds(prevSelectedClientIds => {
+            if (isChecked) {
+                return [...prevSelectedClientIds, clientId];
+            } else {
+                return prevSelectedClientIds.filter(id => id !== clientId);
+            }
+        });
     };
 
     // Fetches data (clients linked to the contact) when the contact changes
@@ -60,10 +98,19 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
         setCurrentPage(page);
     };
 
+    const rightItems = [
+        <div key="1">
+            <button className="btn btn-primary-outline" onClick={unLinkSelectedClients}>Unlink </button>
+        </div>
+    ];
+
+    const leftItems = [<div key="1">Unlink selected contacts</div>];
+    const centerItems: JSX.Element[] = [];
+
     // Tabs configuration for displaying different sections of the contact-client view
     const tabs = [
         {
-            label: 'General',
+            label: <div>General</div>,
             content: (
                 <div className="general-info-container">
                     <h2>General Information</h2>
@@ -77,9 +124,14 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
             )
         },
         {
-            label: 'Client(s)',
+            label: <div>Client(s)</div>,
             content: (
                 <div>
+                    <div>
+                        {selectedClientIds.length > 0 &&
+                            <Toolbar leftItems={leftItems} centerItems={centerItems} rightItems={rightItems} />
+                        }
+                    </div>
                     <div className="form-group">
                         {clients.length === 0 && <NoDataMessage message='No Client(s) found' />}
                         {clients.length > 0 && (
@@ -88,6 +140,13 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
                                 <table className="clients-table">
                                     <thead>
                                         <tr>
+                                            <th>
+                                                <input
+                                                    type='checkbox'
+                                                    checked={selectAll}
+                                                    onChange={handleSelectAllChange}
+                                                />
+                                            </th>
                                             <th>Client Name</th>
                                             <th>Client Code</th>
                                             <th></th>
@@ -96,6 +155,13 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
                                     <tbody>
                                         {currentClients.map((client) => (
                                             <tr key={client.id}>
+                                                <td>
+                                                    <input
+                                                        type='checkbox'
+                                                        checked={selectedClientIds.includes(client.id)}
+                                                        onChange={(e) => handleCheckboxChange(e, client.id)}
+                                                    />
+                                                </td>
                                                 <td>{client.name}</td>
                                                 <td>{client.clientCode}</td>
                                                 <td>
@@ -113,7 +179,7 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
             )
         },
         {
-            label: 'Link to client(s)',
+            label: <div>Link to client(s)</div>,
             content: <LinkContactClientForm linkedClients={clients} setCloseModal={setCloseModal} />
         }
     ];

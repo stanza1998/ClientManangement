@@ -10,7 +10,7 @@
   font-size: 12px; /* Smaller font size */
   margin: 4px 2px;
   cursor: pointer;
-  border-radius: 12px;
+  /* border-radius: 0px; */
   transition-duration: 0.4s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -28,6 +28,11 @@
 /* Primary button styling */
 .btn-primary {
   background-color: #007bff;
+}
+.btn-primary-outline {
+  background-color: #01aced;
+  border: #fff solid 2px;
+  color: #fff;
 }
 
 .btn-primary:hover {
@@ -53,11 +58,11 @@
 }
 
 .clients-table th {
-  background-color: #f3f4f6;
+  background-color: #01aced;
   font-weight: 600;
-  color: #374151;
-  /* text-transform: uppercase; */
-  font-size: 14px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 20px;
 }
 
 .clients-table td {
@@ -70,21 +75,8 @@
 }
 
 .clients-table tr:nth-child(even) {
-  background-color: #f3f4f6;
+  background-color: #fff;
 }
-
-.clients-table th:first-child,
-.clients-table td:first-child {
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-.clients-table th:last-child,
-.clients-table td:last-child {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
 /* table */
 
 /* General info */
@@ -92,7 +84,7 @@
 .general-info-container {
   padding: 20px;
   background-color: #ffffff;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: 0 auto;
@@ -140,14 +132,14 @@
 /* header tag */
 /* Styling for the section title */
 .section-title {
-    font-size: 24px; /* Adjust font size as needed */
-    font-weight: 600; /* Semi-bold */
-    color: #333; /* Dark gray color */
-    margin-bottom: 15px; /* Space below the heading */
-    text-transform: uppercase; /* Uppercase text */
-    letter-spacing: 1px; /* Letter spacing for emphasis */
-    border-bottom: 2px solid #007bff; /* Blue underline */
-    padding-bottom: 5px; /* Space below the underline */
+  font-size: 24px; /* Adjust font size as needed */
+  font-weight: 600; /* Semi-bold */
+  color: #333; /* Dark gray color */
+  margin-bottom: 15px; /* Space below the heading */
+  text-transform: uppercase; /* Uppercase text */
+  letter-spacing: 1px; /* Letter spacing for emphasis */
+  border-bottom: 2px solid #007bff; /* Blue underline */
+  padding-bottom: 5px; /* Space below the underline */
 }
 
 /* header tag */

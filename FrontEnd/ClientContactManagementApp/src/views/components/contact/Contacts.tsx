@@ -87,7 +87,7 @@ const Contacts = observer(({ contacts }: IProps) => {
   const leftItems = [<div key="1">List Of Contacts</div>];
   const centerItems = [<div></div>];
   const rightItems = [<div key="1">
-    <button className='btn btn-primary' onClick={onCreate}>Create</button>
+    <button className='btn btn-primary-outline' onClick={onCreate}>Create</button>
   </div>];
 
   // Rendering the component
