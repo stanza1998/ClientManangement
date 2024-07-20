@@ -29,7 +29,6 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
             await api.clientContact.unlinkContactClientToContact(contact.id, clientId);
             window.location.reload(); // Temporary solution for updating UI
         } catch (error) {
-            console.error('Error unlinking contact from client:', error);
             // Handle error state or display error message to the user
         }
     };
@@ -42,7 +41,6 @@ const ViewContactClientForm: React.FC<IProps> = observer(({ setCloseModal }) => 
             window.location.reload(); // Reload the page after all unlinking operations are complete
         } catch (error) {
             // Handle error
-            console.error('Error unlinking contacts from client:', error);
         }
     };
 

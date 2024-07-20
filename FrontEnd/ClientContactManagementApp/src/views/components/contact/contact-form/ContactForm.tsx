@@ -38,7 +38,6 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
       window.location.reload() // temporary UI fix
       onClose();
     } catch (error) {
-      console.error('Error creating contact:', error);
       // Handle error state or display error message to the user
     }
   };
@@ -74,6 +73,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input
+            className='uk-input'
             type="text"
             id="name"
             name="name"
@@ -84,6 +84,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
         <div className="form-group">
           <label htmlFor="surname">Surname:</label>
           <input
+            className='uk-input'
             type="text"
             id="surname"
             name="surname"
@@ -94,6 +95,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
+            className='uk-input'
             type="text"
             id="email"
             name="email"
@@ -102,7 +104,7 @@ const ContactsForm = observer(({ setCloseModal }: IProps) => {
           />
         </div>
 
-        <button type="submit" className="btn-submit">
+        <button type="submit" className="btn btn-primary">
           Create Contact
         </button>
       </form>

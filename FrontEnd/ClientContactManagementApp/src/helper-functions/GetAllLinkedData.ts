@@ -33,7 +33,6 @@ export async function getAllLinkedData(
 
     return filteredData;
   } catch (error) {
-    console.error("Error fetching linked data:", error);
     return [];
   }
 }
@@ -51,7 +50,6 @@ export async function getClientContactsById(clientId: number) {
       return d;
     });
   } catch (error) {
-    console.error("Error fetching client contacts:", error);
     return [];
   }
 }
@@ -68,7 +66,6 @@ export async function getContactClientsById(clientId: number) {
       return d;
     });
   } catch (error) {
-    console.error("Error fetching client contacts:", error);
     return [];
   }
 }

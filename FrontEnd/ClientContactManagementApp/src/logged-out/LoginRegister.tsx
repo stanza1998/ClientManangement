@@ -32,14 +32,14 @@ const LoginRegister = () => {
             setPassword('');
             alert('Wrong email or password');
             setLoading(false);
-            console.error('Error:', error);
+            console.log(error)
         }
     };
 
     return (
         <div className="login-container">
             <div className="login-box">
-                <h2>Login</h2>
+                <h2>CCM Login</h2>
                 <form onSubmit={handleLogin}>
                     <div className="input-box">
                         <input
@@ -77,7 +77,7 @@ const LoginRegister = () => {
                 </form>
             </div>
 
-  
+
         </div>
     );
 };

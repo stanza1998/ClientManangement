@@ -50,7 +50,6 @@ const LinkClientContactForm = observer(({ setCloseModal, linkedContacts }: IProp
                 await api.clientContact.linkContactToClient(LinkClientContact.clientId, LinkClientContact.contactId);
                 onClose();
             } catch (error) {
-                console.error('Error linking contact to client:', error);
             }
         }
         window.location.reload(); // Refresh the page (consider more optimal UX)

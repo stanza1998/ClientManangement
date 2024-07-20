@@ -50,7 +50,6 @@ const LinkContactClientForm: React.FC<IProps> = observer(({ setCloseModal, linke
                 await api.clientContact.linkContactClientToContact(LinkClientContact.contactId, LinkClientContact.clientId);
                 onClose();
             } catch (error) {
-                console.error('Error linking contact to client:', error);
             }
         }
         window.location.reload(); // Refresh the page (consider more optimal UX)

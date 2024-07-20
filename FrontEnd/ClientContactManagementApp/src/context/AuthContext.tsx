@@ -19,8 +19,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const validateToken = async () => {
             const email = localStorage.getItem('email'); // Assuming email is stored in local storage
-            console.log("🚀 ~ validateToken ~ email:", email);
-
             if (email) {
                 try {
                     // Send the email as a raw string
@@ -29,7 +27,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log("🚀 ~ validateToken ~ response:", response);
                     if (response.data) {
                         setIsAuthenticated(true);
                     } else {
@@ -37,7 +34,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         localStorage.removeItem('token'); // Remove invalid token
                     }
                 } catch (error) {
-                    console.error('Token validation error:', error);
                     setIsAuthenticated(false);
                     localStorage.removeItem('token'); // Remove invalid token
                 }
@@ -62,7 +58,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try {
                 await axios.post('/api/auth/logout', { token });
             } catch (error) {
-                console.error('Logout error:', error);
             }
         }
         localStorage.removeItem('token');

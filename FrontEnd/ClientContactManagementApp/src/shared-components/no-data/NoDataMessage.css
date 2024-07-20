@@ -4,36 +4,38 @@
   justify-content: center;
   align-items: center;
   height: 200px; /* Adjust height as needed */
-  background-color: #f8f9fa; /* Light background color */
-  border: 1px solid #dee2e6; /* Border color */
+  background-color: #01aced; /* Light background color */
+  border: 1px solid #fff; /* Border color */
   border-radius: 8px; /* Rounded corners */
-  color: #6c757d; /* Text color */
+  color: #fff; /* Text color */
   font-size: 18px; /* Font size */
-  font-family: 'Arial', sans-serif; /* Font family */
+  font-family: "Arial", sans-serif; /* Font family */
   margin: 20px; /* Margin around the message box */
   text-align: center; /* Center text */
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.no-data-message:hover {
-  background-color: #e9ecef; /* Slightly darker background on hover */
-  transform: scale(1.05); /* Slight zoom effect on hover */
-}
 
 .no-data-icon {
   font-size: 48px; /* Large icon size */
   margin-bottom: 10px; /* Space between icon and text */
-  color: #6c757d; /* Icon color */
+  color: #fff; /* Icon color */
   animation: pulse 2s infinite; /* Simple pulse animation */
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .no-data-text {
   font-weight: bold;
-  color: #343a40; /* Darker text color */
+  color: #fff; /* Darker text color */
 }

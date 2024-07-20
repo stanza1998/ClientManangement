@@ -63,7 +63,6 @@ const Clients = observer(({ clients }: IProps) => {
         await api.client.delete(id); // Delete client using API
         await api.client.getAll(); // Refresh client list
       } catch (error) {
-        console.error("Error deleting client:", error);
       }
     }
   };

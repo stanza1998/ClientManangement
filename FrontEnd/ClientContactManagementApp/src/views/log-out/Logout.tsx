@@ -12,7 +12,6 @@ const LogoutButton: React.FC = () => {
             console.log("🚀 ~ handleLogout ~ email:", email)
 
             if (!email) {
-                console.error('No email found in local storage.');
                 return;
             }
 
@@ -36,7 +35,6 @@ const LogoutButton: React.FC = () => {
             console.log('Logout successful');
             window.location.reload();
         } catch (error) {
-            console.error('Logout error:', error);
         }
     };
 

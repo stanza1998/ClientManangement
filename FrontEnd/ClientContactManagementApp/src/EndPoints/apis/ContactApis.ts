@@ -16,7 +16,6 @@ export default class ContactApi {
       const items: IContact[] = response.data;
       this.store.contact.load(items); // Load fetched contacts into AppStore
     } catch (error) {
-      console.error("Error fetching contacts:", error);
     }
   }
 
@@ -27,7 +26,6 @@ export default class ContactApi {
       const item: IContact = response.data;
       this.store.contact.load([item]); // Load fetched contact into AppStore
     } catch (error) {
-      console.error("Error fetching contact by ID:", error);
     }
   }
 
@@ -39,7 +37,6 @@ export default class ContactApi {
       this.store.contact.load([newItem]); // Load created contact into AppStore
       return newItem; // Return the created contact object
     } catch (error) {
-      console.error("Error creating contact:", error);
     }
   }
 
@@ -49,7 +46,6 @@ export default class ContactApi {
       await axios.put(`${this.baseUrl}/update/${item.id}`, item);
       this.store.contact.load([item]); // Load updated contact into AppStore
     } catch (error) {
-      console.error("Error updating contact:", error);
     }
   }
 
@@ -59,7 +55,6 @@ export default class ContactApi {
       await axios.delete(`${this.baseUrl}/delete/${id}`);
       this.store.contact.remove(id); // Remove deleted contact from AppStore
     } catch (error) {
-      console.error("Error deleting contact:", error);
     }
   }
 }

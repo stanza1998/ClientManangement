@@ -16,7 +16,6 @@ export default class ClientApi {
       const items: IClient[] = response.data;
       this.store.client.load(items); // Loads fetched clients into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -27,7 +26,6 @@ export default class ClientApi {
       const item: IClient = response.data;
       this.store.client.load([item]); // Loads fetched client into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -39,7 +37,6 @@ export default class ClientApi {
       this.store.client.load([newItem]); // Loads newly created client into AppStore
       return newItem; // Returns the newly created client object
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -49,7 +46,6 @@ export default class ClientApi {
       await axios.put(`${this.baseUrl}/update/${item.id}`, item); // Endpoint URL to update an existing client by ID
       this.store.client.load([item]); // Loads updated client into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -59,7 +55,6 @@ export default class ClientApi {
       await axios.delete(`${this.baseUrl}/delete/${id}`); // Endpoint URL to delete a client by ID
       this.store.client.remove(id); // Removes deleted client from AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 }

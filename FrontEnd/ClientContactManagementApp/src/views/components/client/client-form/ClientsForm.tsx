@@ -43,7 +43,6 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
       window.location.reload() // temporary UI fix
       onClose(); // Close the modal after successful submission
     } catch (error) {
-      console.error('Error:', error);
       // Handle error (e.g., display error message)
     }
   };
@@ -78,7 +77,7 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
           {nameErrorMessage && <ErrorMessage errorMessage={nameErrorMessage} />} {/* Display error message if present */}
           <label htmlFor="name">Name:</label>
           <input
-            className="input"
+            className="uk-input"
             type="text"
             id="name"
             name="name"
@@ -88,7 +87,7 @@ const ClientsForm = observer(({ setCloseModal }: IProps) => {
           />
         </div>
 
-        <button type="submit" className="btn-submit">
+        <button type="submit" className="btn btn-primary">
           Create Client
         </button>
       </form>

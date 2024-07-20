@@ -14,7 +14,6 @@ export async function getNumberOfContacts(clientId: number) {
       return d;
     }).length;
   } catch (error) {
-    console.error("Error fetching client contacts:", error);
     return 0;
   }
 
@@ -33,7 +32,6 @@ export async function getNumberOfClients(clientId: number) {
       return d;
     }).length;
   } catch (error) {
-    console.error("Error fetching client contacts:", error);
     return 0;
   }
 

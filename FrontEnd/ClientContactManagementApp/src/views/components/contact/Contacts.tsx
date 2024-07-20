@@ -78,7 +78,6 @@ const Contacts = observer(({ contacts }: IProps) => {
         await api.contact.delete(id);
         await api.contact.getAll();
       } catch (error) {
-        console.error("Error deleting contact:", error);
       }
     }
   };

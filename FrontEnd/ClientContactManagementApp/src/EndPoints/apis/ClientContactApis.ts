@@ -19,7 +19,6 @@ export default class ClientContactApi {
         // Handle success, e.g., refresh contacts list
       }
     } catch (error) {
-      console.error("Error linking contact to client:", error);
     }
   }
 
@@ -31,7 +30,6 @@ export default class ClientContactApi {
       );
       return response.data; // Returns response data if needed
     } catch (error) {
-      console.error("Error unlinking contact from client:", error);
       throw error;
     }
   }
@@ -43,7 +41,6 @@ export default class ClientContactApi {
       const items: IClientContact[] = response.data;
       this.store.clientContact.load(items); // Loads retrieved contacts into AppStore
     } catch (error) {
-      console.error("Error retrieving contacts for client:", error);
     }
   }
 
@@ -55,7 +52,6 @@ export default class ClientContactApi {
       );
       return response.data; // Returns response data if needed
     } catch (error) {
-      console.error("Error unlinking contact from client:", error);
       throw error;
     }
   }
@@ -70,7 +66,6 @@ export default class ClientContactApi {
         // Handle success, e.g., refresh contacts list
       }
     } catch (error) {
-      console.error("Error linking contact to client:", error);
     }
   }
 }

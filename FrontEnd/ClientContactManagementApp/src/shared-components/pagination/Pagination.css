@@ -15,7 +15,7 @@
     margin: 0 3px; /* Reduced margin for a more compact look */
     padding: 6px 10px; /* Smaller padding for smaller buttons */
     border: 1px solid #ccc;
-    border-radius: 4px;
+    /* border-radius: 4px; */
     transition: background-color 0.3s ease;
 
     &:hover {
@@ -24,6 +24,6 @@
 }
 
 .page-item.active {
-    background-color: #007bff;
+    background-color: #01aced;
     color: white;
 }

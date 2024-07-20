@@ -41,7 +41,6 @@ export default class ClientApi {
       ); // Endpoint URL to retrieve all clients
       this.store.client.load(items); // Loads fetched clients into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -54,7 +53,6 @@ export default class ClientApi {
       ); // Endpoint URL to retrieve a client by ID
       this.store.client.load([item]); // Loads fetched client into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -69,7 +67,6 @@ export default class ClientApi {
       this.store.client.load([newItem]); // Loads newly created client into AppStore
       return newItem; // Returns the newly created client object
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -79,7 +76,6 @@ export default class ClientApi {
       await this.sendRequest("PUT", `${this.baseUrl}/update/${item.id}`, item); // Endpoint URL to update an existing client by ID
       this.store.client.load([item]); // Loads updated client into AppStore
     } catch (error) {
-      console.error(error);
     }
   }
 
@@ -90,7 +86,6 @@ export default class ClientApi {
       this.store.client.remove(id); // Removes deleted client from AppStore
       this.getAll();
     } catch (error) {
-      console.error(error);
     }
   }
 }
